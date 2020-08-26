@@ -269,7 +269,13 @@ class AttachmentTests: XCTestCase {
         var responseBuffer = Self.allocator.buffer(capacity: 500)
         try! responseBuffer.writeJSONEncodable(responseBody)
         
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
+                                                                       status: .ok,
+                                                                       headers: .init([
+                                                                        ("Content-Type", "image/png"),
+                                                                        ("Content-Transfer-Encoding", "binary")]
+                                                                       ))))
+        )
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
@@ -308,5 +314,37 @@ class AttachmentTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.first?.caseId, 3414)
         XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+    }
+    
+    func testGetAttachment() {
+        var requestComplete: EventLoopFuture<Data>!
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachmentId: 622))
+        
+        XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
+                                                    method: .GET,
+                                                    uri: "/index.php?/api/v2/get_attachment/622",
+                                                    headers: .init([
+                                                        ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                                                        ("content-type", "application/json; charset=utf-8"),
+                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Content-Length", "0")] ))),
+                                        try Self.testServer.readInbound()))
+        
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+    
+        
+        let responseBuffer = Self.allocator.buffer(data: Self.file)
+        
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
+                                                                       status: .ok,
+                                                                       headers: .init([
+                                                                        ("Content-Type", "image/png")
+                                                                       ] )))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+
+        // Assert that the client received the response from the server.
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response, Self.file)
     }
 }
