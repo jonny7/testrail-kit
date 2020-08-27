@@ -4,32 +4,9 @@ import NIOFoundationCompat
 import NIOHTTP1
 import AsyncHTTPClient
 
-
-/// Protocol all Handlers should implement
-public protocol TestRailAPIHandler {
-    func send<TM: Codable>(method: HTTPMethod,
-                               path: String,
-                               query: String,
-                               body: HTTPClient.Body,
-                               headers: HTTPHeaders) -> EventLoopFuture<TM>
-}
-
-extension TestRailAPIHandler {
-    func send<TM: Codable>(method: HTTPMethod,
-                               path: String,
-                               query: String = "",
-                               body: HTTPClient.Body = .string(""),
-                               headers: HTTPHeaders = [:]) -> EventLoopFuture<TM> {
-        return send(method: method,
-                    path: path,
-                    query: query,
-                    body: body,
-                    headers: headers)
-    }
-}
-
 /// Default Handler for TestRail
-struct TestRailDefaultAPIHandler: TestRailAPIHandler {
+struct TestRailDefaultAPIHandler {
+    
     public let httpClient: HTTPClient
     private let username: String
     private let apiKey: String
@@ -58,31 +35,63 @@ struct TestRailDefaultAPIHandler: TestRailAPIHandler {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
     
-    public func send<TM: Codable>(method: HTTPMethod,
-                                      path: String,
-                                      query: String = "",
-                                      body: HTTPClient.Body = .string(""),
-                                      headers: HTTPHeaders = [:]) -> EventLoopFuture<TM> {
-        
+    /// public method that api exposes
+    /// - Parameters:
+    ///   - method: `HTTPMethod` type
+    ///   - path: url endpoint
+    ///   - query: query filters
+    ///   - body: payload
+    ///   - headers: `HTTPHeaders`
+    /// - Returns: Returns a `TestRailModel`
+    public func send<TM: TestRailModel>(method: HTTPMethod, path: String, query: String = "", body: HTTPClient.Body = .data(Data()), headers: HTTPHeaders = [:]) -> EventLoopFuture<TM> {
+        return self._send(method: method, path: path, query: query, body: body, headers: headers).flatMap { response in
+            do {
+                if TM.self is TestRailDataResponse.Type {
+                    let model = TestRailDataResponse(data: response) as! TM
+                    return self.eventLoop.makeSucceededFuture(model)
+                } else if TM.self is TestRailAttachments.Type {
+                    let decode = try self.decoder.decode([TestRailAttachment].self, from: response)
+                    let model = TestRailAttachments(data: decode) as! TM
+                    return self.eventLoop.makeSucceededFuture(model)
+                } else {
+                    let model = try self.decoder.decode(TM.self, from: response)
+                    return self.eventLoop.makeSucceededFuture(model)
+                }
+            } catch {
+                return self.eventLoop.makeFailedFuture(error)
+            }
+        }
+    }
+    
+    /// method that sends request to testrail
+    /// - Parameters:
+    ///   - method: `HTTPMethod` type
+    ///   - path: url endpoint
+    ///   - query: query filters
+    ///   - body: payload
+    ///   - headers: `HTTPHeaders`
+    /// - Returns: Data to be handled by public `send()`
+    private func _send(method: HTTPMethod, path: String, query: String = "", body: HTTPClient.Body = .data(Data()), headers: HTTPHeaders = [:]) -> EventLoopFuture<Data> {
+
         var _headers: HTTPHeaders = ["authorization": "Basic \(self.basicAuth)",
                                      "content-type": "application/json; charset=utf-8"]
         headers.forEach { _headers.replaceOrAdd(name: $0.name.lowercased(), value: $0.value) }
-        
+
         do {
             let formattedQuery = query.count > 0 ? "?\(query)" : ""
             let request = try HTTPClient.Request(url: "\(endPoint)/index.php?/api/v2/\(path)\(formattedQuery)", method: method, headers: _headers, body: body)
-            
+
             return httpClient.execute(request: request, eventLoop: .delegate(on: self.eventLoop)).flatMap { response in
-                guard let byteBuffer = response.body else {
+                guard var byteBuffer = response.body else {
                     fatalError("Response body from TestRail is missing! This should never happen.")
                 }
-                let responseData = Data(byteBuffer.readableBytesView)
+                let responseData = byteBuffer.readData(length: byteBuffer.readableBytes)!
 
                 do {
                     guard response.status == .ok else {
                         return self.eventLoop.makeFailedFuture(try self.decoder.decode(TestRailError.self, from: responseData))
                     }
-                    return self.eventLoop.makeSucceededFuture(try self.decoder.decode(TM.self, from: responseData))
+                    return self.eventLoop.makeSucceededFuture(responseData)
 
                 } catch {
                     return self.eventLoop.makeFailedFuture(error)
