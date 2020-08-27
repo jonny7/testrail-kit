@@ -8,15 +8,6 @@ public protocol AttachmentRoutes {
     /// for specifics on these particular methods please see `AddAttachment`
     func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
 
-    /// Adds attachment to a result based on the result ID. The maximum allowable upload size is set to 256mb. Requires TestRail 5.7 or later
-    /// Please Note: The ability to edit test results must be enabled under ‘Site Settings’ in order for add_attachment_to_result endpoints to work.
-    /// - Parameter resultId: The ID of the test result the attachment should be added to
-    func addAttachmentToResult(resultId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
-
-    /// Adds attachment to test run. The maximum allowable upload size is set to 256mb. Requires TestRail 6.3 or later
-    /// - Parameter runId: The ID of the test run the attachment should be added to
-    func addAttachmentToRun(runId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
-
     /// Returns a list of attachments for a test case. Requires TestRail 5.7 or later
     /// - Parameter caseId: The ID of the test case to retrieve attachments from
     func getAttachmentsForCase(caseId: Int) -> EventLoopFuture<TestRailAttachments>
@@ -69,14 +60,6 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
     
     public func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
         return apiHandler.send(method: .POST, path: addAttachment.uri, body: .data(file), headers: multipart)
-    }
-
-    public func addAttachmentToResult(resultId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
-        return apiHandler.send(method: .POST, path: "add_attachment_to_result/\(resultId)", body: .data(file), headers: multipart)
-    }
-
-    public func addAttachmentToRun(runId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
-        return apiHandler.send(method: .POST, path: "add_attachment_to_run/\(runId)", body: .data(file), headers: multipart)
     }
 
     public func getAttachmentsForCase(caseId: Int) -> EventLoopFuture<TestRailAttachments> {
