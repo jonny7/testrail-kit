@@ -4,17 +4,9 @@ import Foundation
 
 public protocol AttachmentRoutes {
     
-    /// Adds an attachment to a test plan. The maximum allowable upload size is set to 256mb. Requires TestRail 6.3 or later
-    /// - Parameters:
-    ///     - planId: The ID of the test plan the attachment should be added to
-    ///     - file: The file to attach to the plan
-    func addAttachmentToPlan(planId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
-
-    /// Adds an attachment to a test plan entry. The maximum allowable upload size is set to 256mb. Requires TestRail 6.3 or later
-    /// - Parameters:
-    ///   - planId: The ID of the test plan containing the entry
-    ///   - entryId: The ID of the test plan entry the attachment should be added to
-    func addAttachmentToTestPlanEntry(planId: Int, entryId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
+    /// This method allows you to add an attachment to TestRail via mutliple different end points.
+    /// for specifics on these particular methods please see `AddAttachment`
+    func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
 
     /// Adds attachment to a result based on the result ID. The maximum allowable upload size is set to 256mb. Requires TestRail 5.7 or later
     /// Please Note: The ability to edit test results must be enabled under ‘Site Settings’ in order for add_attachment_to_result endpoints to work.
@@ -75,12 +67,8 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
         return multipart
     }
     
-    public func addAttachmentToPlan(planId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
-        return apiHandler.send(method: .POST, path: "add_attachment_to_plan/\(planId)", body: .data(file), headers: multipart)
-    }
-    
-    public func addAttachmentToTestPlanEntry(planId: Int, entryId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
-        return apiHandler.send(method: .POST, path: "add_attachment_to_plan_entry/\(planId)/\(entryId)", body: .data(file), headers: multipart)
+    public func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
+        return apiHandler.send(method: .POST, path: addAttachment.uri, body: .data(file), headers: multipart)
     }
 
     public func addAttachmentToResult(resultId: Int, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
