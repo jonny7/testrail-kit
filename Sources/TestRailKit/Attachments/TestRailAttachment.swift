@@ -12,3 +12,7 @@ public struct TestRailAttachment: Codable {
     public var userId: Int
     public var resultId: Int?
 }
+
+public struct TestRailAttachments: TestRailModel {
+    public var data: [TestRailAttachment]
+}
