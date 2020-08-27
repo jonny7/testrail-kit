@@ -29,7 +29,7 @@ class AttachmentTests: XCTestCase {
     
     func testAddAttachmentToPlan() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachmentToPlan(planId: 1, file: Self.file))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(addAttachment: .toPlan(planId: 1), file: Self.file))
             
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -61,7 +61,7 @@ class AttachmentTests: XCTestCase {
 
     func testAddAttachmentToTestPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachmentToTestPlanEntry(planId: 1, entryId: 2, file: Self.file))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(addAttachment: .toTestPlanEntry(planId: 1, entryId: 2), file: Self.file))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
