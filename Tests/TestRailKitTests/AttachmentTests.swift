@@ -318,7 +318,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachment() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachmentId: 622))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.attachmentData(attachmentData: .get(attachmentId: 622)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -346,5 +346,37 @@ class AttachmentTests: XCTestCase {
         // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data, Self.file)
+    }
+    
+    func testDeleteAttachment() {
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.attachmentData(attachmentData: .delete(attachmentId: 622)))
+
+        XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
+                                                    method: .POST,
+                                                    uri: "/index.php?/api/v2/delete_attachment/622",
+                                                    headers: .init([
+                                                        ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                                                        ("content-type", "application/json; charset=utf-8"),
+                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Content-Length", "0")] ))),
+                                        try Self.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+
+        let emptyResponse = "{}".data(using: .utf8)!
+        let responseBuffer = Self.allocator.buffer(data: emptyResponse)
+
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
+                                                                       status: .ok,
+                                                                       headers: .init([
+                                                                        ("Content-Type", "application/json")
+                                                                       ] )))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+
+        // Assert that the client received the response from the server.
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data, emptyResponse)
     }
 }

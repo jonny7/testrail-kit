@@ -11,14 +11,10 @@ public protocol AttachmentRoutes {
     /// This method allows you to get attachments from various TestRail objects via multiple different endpoints
     /// for specifics on these particular methods please see `GetAttachments`
     func getAttachments(getAttachment: GetAttachments) -> EventLoopFuture<TestRailAttachments>
-
-    /// Retrieves the requested file identified by :attachment_id. Requires TestRail 5.7 or later
-    /// - Parameter attachmentId: The ID of the attachment to retrieve
-    func getAttachment(attachmentId: Int) -> EventLoopFuture<TestRailDataResponse>
-
-    /// Deletes the specified attachment identified by :attachment_id. Requires TestRail 5.7 or later
-    /// - Parameter attachmentId: The ID of the attachment to to delete
-    func deleteAttachment(attachmentId: Int) -> EventLoopFuture<TestRailDataResponse>
+    
+    /// This method allows you to perform data actions, namely retrieve a testrail attachment or delete one
+    /// for specifics on these particular methods please see `AttachmentData`
+    func attachmentData(attachmentData: AttachmentData) -> EventLoopFuture<TestRailDataResponse>
     
     /// Headers to send with the request.
     var headers: HTTPHeaders { get set }
@@ -47,12 +43,8 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
     public func getAttachments(getAttachment: GetAttachments) -> EventLoopFuture<TestRailAttachments> {
         return apiHandler.send(method: .GET, path: getAttachment.uri, headers: headers)
     }
-
-    public func getAttachment(attachmentId: Int) -> EventLoopFuture<TestRailDataResponse> {
-        return apiHandler.send(method: .GET, path: "get_attachment/\(attachmentId)", headers: headers)
-    }
-
-    public func deleteAttachment(attachmentId: Int) -> EventLoopFuture<TestRailDataResponse> {
-        return apiHandler.send(method: .POST, path: "delete_attachment/\(attachmentId)", headers: headers)
+    
+    public func attachmentData(attachmentData: AttachmentData) -> EventLoopFuture<TestRailDataResponse> {
+        return apiHandler.send(method: attachmentData.request.1, path: attachmentData.request.0, headers: headers)
     }
 }
