@@ -4,31 +4,13 @@ import Foundation
 
 public protocol AttachmentRoutes {
     
-    /// This method allows you to add an attachment to TestRail via mutliple different end points.
+    /// This method allows you to add an attachment to TestRail objects via mutliple different end points.
     /// for specifics on these particular methods please see `AddAttachment`
     func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
-
-    /// Returns a list of attachments for a test case. Requires TestRail 5.7 or later
-    /// - Parameter caseId: The ID of the test case to retrieve attachments from
-    func getAttachmentsForCase(caseId: Int) -> EventLoopFuture<TestRailAttachments>
-
-    /// Returns a list of attachments for a test plan. Requires TestRail 6.3 or later
-    /// - Parameter planId: The ID of the test plan to retrieve attachments from
-    func getAttachmentsForPlan(planId: Int) -> EventLoopFuture<TestRailAttachments>
-
-    /// Returns a list of attachments for a test plan entry. Requires TestRail 6.3 or later
-    /// - Parameters:
-    ///   - planId: The ID of the test plan containing the entry
-    ///   - entryId: The ID of the test plan entry to retrieve attachments from
-    func getAttachmentsForPlanEntry(planId: Int, entryId: Int) -> EventLoopFuture<TestRailAttachments>
-
-    /// Returns a list of attachments for a test run. Requires TestRail 6.3 or later
-    /// - Parameter runId: The ID of the test run to retrieve attachments from
-    func getAttachmentsForRun(runId: Int) -> EventLoopFuture<TestRailAttachments>
-
-    /// Returns a list of attachments for a test’s results. Requires TestRail 5.7 or later
-    /// - Parameter testId: The ID of the test to retrieve attachments from
-    func getAttachmentsForTest(testId: Int) -> EventLoopFuture<TestRailAttachments>
+    
+    /// This method allows you to get attachments from various TestRail objects via multiple different endpoints
+    /// for specifics on these particular methods please see `GetAttachments`
+    func getAttachments(getAttachment: GetAttachments) -> EventLoopFuture<TestRailAttachments>
 
     /// Retrieves the requested file identified by :attachment_id. Requires TestRail 5.7 or later
     /// - Parameter attachmentId: The ID of the attachment to retrieve
@@ -61,25 +43,9 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
     public func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
         return apiHandler.send(method: .POST, path: addAttachment.uri, body: .data(file), headers: multipart)
     }
-
-    public func getAttachmentsForCase(caseId: Int) -> EventLoopFuture<TestRailAttachments> {
-        return apiHandler.send(method: .GET, path: "get_attachments_for_case/\(caseId)", headers: headers)
-    }
-
-    public func getAttachmentsForPlan(planId: Int) -> EventLoopFuture<TestRailAttachments> {
-        return apiHandler.send(method: .GET, path: "get_attachments_for_plan/\(planId)", headers: headers)
-    }
-
-    public func getAttachmentsForPlanEntry(planId: Int, entryId: Int) -> EventLoopFuture<TestRailAttachments> {
-        return apiHandler.send(method: .GET, path: "get_attachments_for_plan_entry/\(planId)/\(entryId)", headers: headers)
-    }
-
-    public func getAttachmentsForRun(runId: Int) -> EventLoopFuture<TestRailAttachments> {
-        return apiHandler.send(method: .GET, path: "get_attachments_for_run/\(runId)", headers: headers)
-    }
-
-    public func getAttachmentsForTest(testId: Int) -> EventLoopFuture<TestRailAttachments> {
-        return apiHandler.send(method: .GET, path: "get_attachments_for_test/\(testId)", headers: headers)
+    
+    public func getAttachments(getAttachment: GetAttachments) -> EventLoopFuture<TestRailAttachments> {
+        return apiHandler.send(method: .GET, path: getAttachment.uri, headers: headers)
     }
 
     public func getAttachment(attachmentId: Int) -> EventLoopFuture<TestRailDataResponse> {
