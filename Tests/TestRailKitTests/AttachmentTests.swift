@@ -157,7 +157,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentForCase() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachmentsForCase(caseId: 31))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forCase(caseId: 31)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -188,7 +188,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForPlan() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachmentsForPlan(planId: 32))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forPlan(planId: 32)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -219,7 +219,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachmentsForPlanEntry(planId: 6, entryId: 29))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forPlanEntry(planId: 6, entryId: 29)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -250,7 +250,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForRun() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachmentsForRun(runId: 65))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forRun(runId: 65)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -287,7 +287,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForTest() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachmentsForTest(testId: 1003))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forTest(testId: 1003)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
