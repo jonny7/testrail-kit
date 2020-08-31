@@ -6,11 +6,11 @@ public protocol AttachmentRoutes {
     
     /// This method allows you to add an attachment to TestRail objects via mutliple different end points.
     /// for specifics on these particular methods please see `AddAttachment`
-    func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
+    func addAttachment(attachment: Attachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
     
     /// This method allows you to get attachments from various TestRail objects via multiple different endpoints
     /// for specifics on these particular methods please see `GetAttachments`
-    func getAttachments(getAttachment: GetAttachments) -> EventLoopFuture<TestRailAttachments>
+    func getAttachments(attachment: Attachment) -> EventLoopFuture<TestRailAttachments>
     
     /// This method allows you to perform data actions, namely retrieve a testrail attachment or delete one
     /// for specifics on these particular methods please see `AttachmentData`
@@ -36,12 +36,12 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
         return multipart
     }
     
-    public func addAttachment(addAttachment: AddAttachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
-        return apiHandler.send(method: .POST, path: addAttachment.uri, body: .data(file), headers: multipart)
+    public func addAttachment(attachment: Attachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
+        return apiHandler.send(method: .POST, path: attachment.uri, body: .data(file), headers: multipart)
     }
     
-    public func getAttachments(getAttachment: GetAttachments) -> EventLoopFuture<TestRailAttachments> {
-        return apiHandler.send(method: .GET, path: getAttachment.uri, headers: headers)
+    public func getAttachments(attachment: Attachment) -> EventLoopFuture<TestRailAttachments> {
+        return apiHandler.send(method: .GET, path: attachment.uri, headers: headers)
     }
     
     public func attachmentData(attachmentData: AttachmentData) -> EventLoopFuture<TestRailDataResponse> {

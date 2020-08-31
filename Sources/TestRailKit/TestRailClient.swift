@@ -6,7 +6,7 @@ public final class TestRailClient {
     
     var handler: TestRailDefaultAPIHandler
     public var attachments: AttachmentRoutes
-    //public var cases: CaseRoutes
+    public var cases: CaseRoutes
     
     /// Initializes the TestRail Client
     /// - Parameters:
@@ -19,7 +19,7 @@ public final class TestRailClient {
     public init(httpClient: HTTPClient, eventLoop: EventLoop, username: String, apiKey: String, testRailUrl: String, port: Int?) {
         handler = TestRailDefaultAPIHandler(httpClient: httpClient, eventLoop: eventLoop, username: username, apiKey: apiKey, testRailBaseURL: testRailUrl, port: port)
         attachments = TestRailAttachmentRoutes(apiHandler: handler)
-        //cases = TestRailCaseRoutes(apiHandler: handler)
+        cases = TestRailCaseRoutes(apiHandler: handler)
     }
     
     /// ensures the correct `eventLoop` by hopping threads if needed

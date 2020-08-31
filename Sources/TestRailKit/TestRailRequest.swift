@@ -34,7 +34,7 @@ struct TestRailDefaultAPIHandler {
         decoder.dateDecodingStrategy = .secondsSince1970
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
-    
+
     /// public method that api exposes
     /// - Parameters:
     ///   - method: `HTTPMethod` type

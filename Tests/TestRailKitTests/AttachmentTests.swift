@@ -29,7 +29,7 @@ class AttachmentTests: XCTestCase {
     
     func testAddAttachmentToPlan() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(addAttachment: .toPlan(planId: 1), file: Self.file))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toPlan(planId: 1), file: Self.file))
             
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -38,7 +38,7 @@ class AttachmentTests: XCTestCase {
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
                                                         ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                                    ("Content-Length", "\(Self.file.count)")] ))),
+                                                        ("Content-Length", "\(Self.file.count)")] ))),
                                         try Self.testServer.readInbound()))
         
         let requestBuffer = Self.allocator.buffer(data: Self.file)
@@ -54,14 +54,13 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.attachmentId, 443)
     }
 
     func testAddAttachmentToTestPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(addAttachment: .toTestPlanEntry(planId: 1, entryId: 2), file: Self.file))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toTestPlanEntry(planId: 1, entryId: 2), file: Self.file))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -70,7 +69,7 @@ class AttachmentTests: XCTestCase {
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
                                                         ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                                    ("Content-Length", "\(Self.file.count)")] ))),
+                                                        ("Content-Length", "\(Self.file.count)")] ))),
                                         try Self.testServer.readInbound()))
 
         let requestBuffer = Self.allocator.buffer(data: Self.file)
@@ -86,14 +85,13 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.attachmentId, 443)
     }
 
     func testAddAttachmentToResult() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(addAttachment: .toResult(resultId: 5), file: Self.file))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toResult(resultId: 5), file: Self.file))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -102,7 +100,7 @@ class AttachmentTests: XCTestCase {
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
                                                         ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                                    ("Content-Length", "\(Self.file.count)")] ))),
+                                                        ("Content-Length", "\(Self.file.count)")] ))),
                                         try Self.testServer.readInbound()))
 
         let requestBuffer = Self.allocator.buffer(data: Self.file)
@@ -118,14 +116,13 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.attachmentId, 443)
     }
 
     func testAddAttachmentToRun() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(addAttachment: .toRun(rundId: 3), file: Self.file))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toRun(rundId: 3), file: Self.file))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -134,7 +131,7 @@ class AttachmentTests: XCTestCase {
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
                                                         ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                                    ("Content-Length", "\(Self.file.count)")] ))),
+                                                        ("Content-Length", "\(Self.file.count)")] ))),
                                         try Self.testServer.readInbound()))
 
         let requestBuffer = Self.allocator.buffer(data: Self.file)
@@ -150,14 +147,13 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.attachmentId, 443)
     }
 
     func testGetAttachmentForCase() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forCase(caseId: 31)))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(attachment: .forCase(caseId: 31)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -180,7 +176,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data.first?.caseId, 3414)
         XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
@@ -188,7 +183,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForPlan() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forPlan(planId: 32)))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(attachment: .forPlan(planId: 32)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -211,7 +206,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data.first?.caseId, 3414)
         XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
@@ -219,7 +213,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forPlanEntry(planId: 6, entryId: 29)))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(attachment: .forPlanEntry(planId: 6, entryId: 29)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -242,7 +236,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data.first?.caseId, 3414)
         XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
@@ -250,7 +243,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForRun() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forRun(runId: 65)))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(attachment: .forRun(runId: 65)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -279,7 +272,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data.first?.caseId, 3414)
         XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
@@ -287,7 +279,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForTest() {
         var requestComplete: EventLoopFuture<TestRailAttachments>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(getAttachment: .forTest(testId: 1003)))
+        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachments(attachment: .forTest(testId: 1003)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -310,7 +302,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data.first?.caseId, 3414)
         XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
@@ -343,7 +334,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data, Self.file)
     }
@@ -375,7 +365,6 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
-        // Assert that the client received the response from the server.
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data, emptyResponse)
     }
