@@ -17,5 +17,4 @@ public enum AttachmentData {
             return ("delete_attachment/\(attachmentId)", .POST)
         }
     }
-    
 }
