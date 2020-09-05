@@ -14,6 +14,7 @@ class CaseTests: XCTestCase {
     static var client: TestRailClient!
     static var testCaseResponse = getTestCaseResponse()
     static var addTestCaseRequest = getTestCaseRequest()
+    static var updateTestCase = getUpdatedTestCase()
     
     override class func setUp() {
         Self.group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
@@ -56,11 +57,41 @@ class CaseTests: XCTestCase {
         XCTAssertEqual(response.title, "Response One")
     }
     
+    func testGetCases () {
+        var requestComplete: EventLoopFuture<TestRailCases>!
+        XCTAssertNoThrow(requestComplete = Self.client.cases.getCases(projectId: 3, suiteId: 5, filter: [
+            .template_id: .integer(10),
+            .type_id: .integer(5)
+        ]))
+            
+        XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
+                                                    method: .GET,
+                                                    uri: "/index.php?/api/v2/get_cases/3&suite_id=5&template_id=10&type_id=5",
+                                                    headers: .init([
+                                                        ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                                                        ("content-type", "application/json; charset=utf-8"),
+                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Content-Length", "0")] ))),
+                                        try Self.testServer.readInbound()))
+        
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        
+        let responseBody = getMockTestCasesResponse()
+        var responseBuffer = Self.allocator.buffer(capacity: 500)
+        try! responseBuffer.writeJSONEncodable(responseBody)
+        
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data[0].title, "Response One")
+    }
+    
     func testAddCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
         
         XCTAssertNoThrow(requestComplete = try! Self.client.cases.addCase(sectionId: 275, testRailCase: Self.addTestCaseRequest))
-        
         var requestBuffer = Self.allocator.buffer(capacity: 250)
         try! requestBuffer.writeJSONEncodable(Self.addTestCaseRequest)
         let contentLength = requestBuffer.readableBytes
@@ -80,14 +111,48 @@ class CaseTests: XCTestCase {
 
 
         var responseBuffer = Self.allocator.buffer(capacity: 250)
-        try! responseBuffer.writeJSONEncodable(Self.addTestCaseRequest)
+        try! responseBuffer.writeJSONEncodable(Self.testCaseResponse)
 
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.id, 88)
+        XCTAssertEqual(response.id!, 2)
+    }
+    
+    func testUpdateCase() {
+        var requestComplete: EventLoopFuture<TestRailCase>!
+
+        XCTAssertNoThrow(requestComplete = try! Self.client.cases.updateCase(caseId: 88, testRailCase: Self.updateTestCase))
+
+        var requestBuffer = Self.allocator.buffer(capacity: 250)
+        try! requestBuffer.writeJSONEncodable(Self.updateTestCase)
+        let contentLength = requestBuffer.readableBytes
+
+        XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
+                                                    method: .POST,
+                                                    uri: "/index.php?/api/v2/update_case/88",
+                                                    headers: .init([
+                                                        ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                                                        ("content-type", "application/json; charset=utf-8"),
+                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Content-Length", "\(contentLength)")] ))),
+                                        try Self.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+
+
+        var responseBuffer = Self.allocator.buffer(capacity: 250)
+        try! responseBuffer.writeJSONEncodable(Self.testCaseResponse)
+
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.id!, 2)
     }
 }
 
@@ -96,5 +161,15 @@ func getTestCaseResponse() -> MockCase {
 }
 
 func getTestCaseRequest() -> TestRailCase {
-    return TestRailCase(id: 88, title: "Add Me", sectionId: 275, templateId: 9, typeId: 3, priorityId: 6, milestoneId: 1, refs: "JIRA-1, JIRA-2", createdBy: 4, createdOn: Date(timeIntervalSince1970: 1583515488), updatedBy: 4, updatedOn: Date(timeIntervalSince1970: 1583515488), estimate: nil, estimateForecast: nil, suiteId: 7, displayOrder: 2, customAutomationType: nil, customTestrailLabel: nil, customPreconds: nil, customSteps: nil, customExpected: nil, customStepsSeparated: nil, customMission: nil, customGoals: nil)
+    return TestRailCase(title: "Add Me", sectionId: 275, templateId: 9, typeId: 3, priorityId: 6, milestoneId: 1, refs: "JIRA-1, JIRA-2", createdBy: 4, createdOn: Date(timeIntervalSince1970: 1583515488), updatedBy: 4, updatedOn: Date(timeIntervalSince1970: 1583515488), estimate: nil, estimateForecast: nil, suiteId: 7, displayOrder: 2, customAutomationType: nil, customTestrailLabel: nil, customPreconds: nil, customSteps: nil, customExpected: nil, customStepsSeparated: nil, customMission: nil, customGoals: nil)
 }
+
+func getUpdatedTestCase() -> UpdatedTestRailCase {
+    return UpdatedCase(propertyId: 5)
+}
+
+func getMockTestCasesResponse() -> MockCases {
+    let mockCase = getTestCaseResponse()
+    return MockCases(data: [mockCase])
+}
+
