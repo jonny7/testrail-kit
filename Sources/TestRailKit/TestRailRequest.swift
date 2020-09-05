@@ -78,7 +78,7 @@ struct TestRailDefaultAPIHandler {
         headers.forEach { _headers.replaceOrAdd(name: $0.name.lowercased(), value: $0.value) }
 
         do {
-            let formattedQuery = query.count > 0 ? "?\(query)" : ""
+            let formattedQuery = query.count > 0 ? "\(query)" : ""
             let request = try HTTPClient.Request(url: "\(endPoint)/index.php?/api/v2/\(path)\(formattedQuery)", method: method, headers: _headers, body: body)
 
             return httpClient.execute(request: request, eventLoop: .delegate(on: self.eventLoop)).flatMap { response in

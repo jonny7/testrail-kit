@@ -16,14 +16,14 @@ public protocol CaseRoutes {
 
     /// Updates an existing test case (partial updates are supported, i.e. you can submit and update specific fields).
     /// - Parameter caseId: The ID of the test case
-    //func updateCase(caseId: Int, testRailCase: TestRailModel) -> EventLoopFuture<TestRailCase>
+    func updateCase(caseId: Int, testRailCase: UpdatedTestRailCase) throws -> EventLoopFuture<TestRailCase>
 
     /// Returns a list of test cases for a project or specific test suite (if the project has multiple suites enabled).
     /// - Parameters:
     ///   - projectId: The ID of the project
     ///   - suiteId: The ID of the test suite (optional if the project is operating in single suite mode)
     ///   - filter: A series of optional filters that can be applied https://www.gurock.com/testrail/docs/api/reference/cases
-    //func getCases(projectId: Int, suiteId: Int, filter: [String: Any]?) -> EventLoopFuture<TestRailCases>
+    func getCases(projectId: Int, suiteId: Int, filter: [TestRailFilter: MapToFilter]?) -> EventLoopFuture<TestRailCases>
 
     /// Deletes an existing test case.
     /// Looks as this returns an empty body and response of 200. This really should be 204 imo
@@ -48,26 +48,22 @@ public struct TestRailCaseRoutes: CaseRoutes {
         return apiHandler.send(method: .GET, path: "get_case/\(caseId)", headers: headers)
     }
 
-//    public func getCases(projectId: Int, suiteId: Int, filter: [String : Any]?) -> EventLoopFuture<TestRailCases> {
-//        return apiHandler.send(method: .GET, path: "get_cases/\(projectId)&suite_id=\(suiteId)", query: queryParams, headers: headers)
-//    }
+    public func getCases(projectId: Int, suiteId: Int, filter: [TestRailFilter: MapToFilter]?) -> EventLoopFuture<TestRailCases> {
+        let queryParams = filter?.queryParameters ?? ""
+        return apiHandler.send(method: .GET, path: "get_cases/\(projectId)&suite_id=\(suiteId)", query: queryParams, headers: headers)
+    }
 
     public func addCase(sectionId: Int, testRailCase: TestRailCase) throws -> EventLoopFuture<TestRailCase> {
-        let body = try decodeTestRail(data: testRailCase)
+        let body = try encodeTestRailModel(data: testRailCase)
         return apiHandler.send(method: .POST, path: "add_case/\(sectionId)", body: .string(body) , headers: headers)
     }
 
-//    public func updateCase(caseId: Int, case: TestRailModel) -> EventLoopFuture<TestRailCase> {
-//        return apiHandler.send(method: .POST, path: "update_case/\(caseId)", body: TestRailModel, headers: headers)
-//    }
+    public func updateCase(caseId: Int, testRailCase: UpdatedTestRailCase) throws -> EventLoopFuture<TestRailCase> {
+        let body = try encodeTestRailModel(data: testRailCase)
+        return apiHandler.send(method: .POST, path: "update_case/\(caseId)", body: .string(body), headers: headers)
+    }
 
 //    public func deleteCase(caseId: Int) -> EventLoopFuture<TestRailDataResponse> {
 //        return apiHandler.send(method: .POST, path: "delete_case/\(caseId)", headers: headers)
 //    }
-}
-
-func decodeTestRail<T: Encodable>(data: T) throws -> String {
-    let encoded = try JSONEncoder().encode(data)
-    let body = String(data: encoded, encoding: .utf8)!
-    return body
 }
