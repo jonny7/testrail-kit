@@ -2,21 +2,17 @@ import NIO
 import NIOHTTP1
 import Foundation
 
+
+
 public protocol CaseRoutes {
 
     /// Returns an existing test case.
     /// - Parameter caseId: The ID of the test case
     func getCase(caseId: Int) -> EventLoopFuture<TestRailCase>
-
-    /// Creates a new test case.
-    /// - Parameters:
-    ///   - sectionId: The ID of the section the test case should be added to
-    ///   - case: The case to add to TestRail
-    func addCase(sectionId: Int, testRailCase: TestRailCase) throws -> EventLoopFuture<TestRailCase>
-
-    /// Updates an existing test case (partial updates are supported, i.e. you can submit and update specific fields).
-    /// - Parameter caseId: The ID of the test case
-    func updateCase(caseId: Int, testRailCase: UpdatedTestRailCase) throws -> EventLoopFuture<TestRailCase>
+    
+    /// This method allows you to add or update a TestRail test case
+    /// for specifics on these particular methods please see `AddOrUpdateCase`
+    func addOrUpdate(addOrUpdateCase: AddOrUpdateCase) throws -> EventLoopFuture<TestRailCase>
 
     /// Returns a list of test cases for a project or specific test suite (if the project has multiple suites enabled).
     /// - Parameters:
@@ -52,15 +48,12 @@ public struct TestRailCaseRoutes: CaseRoutes {
         let queryParams = filter?.queryParameters ?? ""
         return apiHandler.send(method: .GET, path: "get_cases/\(projectId)&suite_id=\(suiteId)", query: queryParams, headers: headers)
     }
-
-    public func addCase(sectionId: Int, testRailCase: TestRailCase) throws -> EventLoopFuture<TestRailCase> {
-        let body = try encodeTestRailModel(data: testRailCase)
-        return apiHandler.send(method: .POST, path: "add_case/\(sectionId)", body: .string(body) , headers: headers)
-    }
-
-    public func updateCase(caseId: Int, testRailCase: UpdatedTestRailCase) throws -> EventLoopFuture<TestRailCase> {
-        let body = try encodeTestRailModel(data: testRailCase)
-        return apiHandler.send(method: .POST, path: "update_case/\(caseId)", body: .string(body), headers: headers)
+    
+    public func addOrUpdate(addOrUpdateCase: AddOrUpdateCase) throws -> EventLoopFuture<TestRailCase> {
+        guard let testCase = addOrUpdateCase.request.1 else {
+            throw TestRailKitError.couldNotEncode
+        }
+        return apiHandler.send(method: .POST, path: addOrUpdateCase.request.0, body: .string(testCase), headers: headers)
     }
 
 //    public func deleteCase(caseId: Int) -> EventLoopFuture<TestRailDataResponse> {
