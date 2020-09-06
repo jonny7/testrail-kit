@@ -1,6 +1,6 @@
 import Foundation
 
-public enum MapToFilter {
+public enum TestRailFilterValueBuilder {
     case list([Int])
     case date(Date)
     case integer(Int)
