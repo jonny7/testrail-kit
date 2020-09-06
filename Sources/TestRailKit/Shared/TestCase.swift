@@ -1,6 +1,6 @@
 import Foundation
 
-protocol Case {
+protocol TestCase {
     var id: Int? { get }
     var title: String { get }
     var sectionId: Int { get }
