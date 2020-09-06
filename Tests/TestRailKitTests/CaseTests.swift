@@ -91,7 +91,7 @@ class CaseTests: XCTestCase {
     func testAddCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
         
-        XCTAssertNoThrow(requestComplete = try! Self.client.cases.addOrUpdate(addOrUpdateCase: .add(sectionId: 275, testRailCase: Self.addTestCaseRequest)))
+        XCTAssertNoThrow(requestComplete = try! Self.client.cases.addCase(type: .add, id: 275, testCase: Self.addTestCaseRequest))
         
         var requestBuffer = Self.allocator.buffer(capacity: 250)
         try! requestBuffer.writeJSONEncodable(Self.addTestCaseRequest)
@@ -125,7 +125,7 @@ class CaseTests: XCTestCase {
     func testUpdateCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
 
-        XCTAssertNoThrow(requestComplete = try! Self.client.cases.addOrUpdate(addOrUpdateCase: .update(caseId: 88, testRailCase: Self.updateTestCase)))
+        XCTAssertNoThrow(requestComplete = try! Self.client.cases.addCase(type: .update, id: 88, testCase: Self.updateTestCase))
 
         var requestBuffer = Self.allocator.buffer(capacity: 250)
         try! requestBuffer.writeJSONEncodable(Self.updateTestCase)

@@ -1,7 +1,7 @@
 @testable import TestRailKit
 import Foundation
 
-struct CustomTestRailCase: Case, TestRailModel {
+struct CustomTestRailCase: TestCase, TestRailModel {
     var id: Int?
     var title: String
     var sectionId: Int

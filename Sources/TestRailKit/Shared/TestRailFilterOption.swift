@@ -1,4 +1,4 @@
-public enum TestRailFilter {
+public enum TestRailFilterOption {
     case created_after
     case created_before
     case created_by

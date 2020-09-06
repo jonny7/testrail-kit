@@ -1,4 +1,4 @@
-extension Dictionary where Key == TestRailFilter, Value == MapToFilter {
+extension Dictionary where Key == TestRailFilterOption, Value == TestRailFilterValueBuilder {
     var queryParameters: String {
         return self.map { key, value in
             return "\(key.description)\(value.mapping)"
