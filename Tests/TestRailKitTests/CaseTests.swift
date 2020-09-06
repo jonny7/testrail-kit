@@ -31,7 +31,7 @@ class CaseTests: XCTestCase {
     
     func testGetCase () {
         var requestComplete: EventLoopFuture<TestRailCase>!
-        XCTAssertNoThrow(requestComplete = Self.client.cases.getCase(caseId: 100))
+        XCTAssertNoThrow(requestComplete = Self.client.cases.getCase(type: .single(caseId: 100)))
             
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -59,10 +59,10 @@ class CaseTests: XCTestCase {
     
     func testGetCases () {
         var requestComplete: EventLoopFuture<TestRailCases>!
-        XCTAssertNoThrow(requestComplete = Self.client.cases.getCases(projectId: 3, suiteId: 5, filter: [
+        XCTAssertNoThrow(requestComplete = Self.client.cases.getCase(type: .many(projectId: 3, suiteId: 5, filter: [
             .template_id: .integer(10),
             .type_id: .integer(5)
-        ]))
+        ])))
             
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
