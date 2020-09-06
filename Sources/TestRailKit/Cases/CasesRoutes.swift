@@ -9,18 +9,9 @@ public protocol CaseRoutes {
     ///   - type: See `Case`
     ///   - id: The `caseId` for updating a case or the `sectionId` of where the case should be added
     ///   - testCase: `Codable` test case
-    func addCase<T: TestRailModel>(type: Case, id: Int, testCase: T) throws -> EventLoopFuture<TestRailCase>
-    
-    /// Returns an existing test case.
-    /// - Parameter caseId: The ID of the test case
-    func getCase(caseId: Int) -> EventLoopFuture<TestRailCase>
+    func addCase<TM: TestRailModel>(type: Case, id: Int, testCase: TM) throws -> EventLoopFuture<TestRailCase>
 
-    /// Returns a list of test cases for a project or specific test suite (if the project has multiple suites enabled).
-    /// - Parameters:
-    ///   - projectId: The ID of the project
-    ///   - suiteId: The ID of the test suite (optional if the project is operating in single suite mode)
-    ///   - filter: A series of optional filters that can be applied https://www.gurock.com/testrail/docs/api/reference/cases
-    func getCases(projectId: Int, suiteId: Int, filter: [TestRailFilterOption: TestRailFilterValueBuilder]?) -> EventLoopFuture<TestRailCases>
+    func getCase<TM: TestRailModel>(type: Case) -> EventLoopFuture<TM>
 
     /// Deletes an existing test case.
     /// Looks as this returns an empty body and response of 200. This really should be 204 imo
@@ -31,7 +22,7 @@ public protocol CaseRoutes {
     var headers: HTTPHeaders { get set }
 }
 
-public struct TestRailCaseRoutes: CaseRoutes {
+public struct TestRailCaseRoutes: CaseRoutes {    
 
     public var headers: HTTPHeaders = [:]
 
@@ -41,18 +32,14 @@ public struct TestRailCaseRoutes: CaseRoutes {
         self.apiHandler = apiHandler
     }
     
-    public func addCase<T>(type: Case, id: Int, testCase: T) throws -> EventLoopFuture<TestRailCase> where T : TestRailModel {
+    public func addCase<TM>(type: Case, id: Int, testCase: TM) throws -> EventLoopFuture<TestRailCase> where TM : TestRailModel {
         let body = try encodeTestRailModel(data: testCase)
-        return apiHandler.send(method: .POST, path: "\(type.rawValue)\(id)", body: .string(body), headers: headers)
+        return apiHandler.send(method: .POST, path: "\(type.uri.0)\(id)", body: .string(body), headers: headers)
     }
-
-    public func getCase(caseId: Int) -> EventLoopFuture<TestRailCase> {
-        return apiHandler.send(method: .GET, path: "get_case/\(caseId)", headers: headers)
-    }
-
-    public func getCases(projectId: Int, suiteId: Int, filter: [TestRailFilterOption: TestRailFilterValueBuilder]?) -> EventLoopFuture<TestRailCases> {
-        let queryParams = filter?.queryParameters ?? ""
-        return apiHandler.send(method: .GET, path: "get_cases/\(projectId)&suite_id=\(suiteId)", query: queryParams, headers: headers)
+    
+    public func getCase<TM>(type: Case) -> EventLoopFuture<TM> where TM : TestRailModel {
+        let filter = type.uri.1 ?? ""
+        return apiHandler.send(method: .GET, path: "\(type.uri.0)", query: filter, headers: headers)
     }
 
 //    public func deleteCase(caseId: Int) -> EventLoopFuture<TestRailDataResponse> {
