@@ -1,1 +1,1 @@
-public class UpdatedTestRailCase: Codable {}
+public class UpdatedTestRailCase: TestRailModel {}

@@ -1,5 +1,5 @@
 public enum Attachment {
-    
+
     /// Returns a list of attachments for a test case. Requires TestRail 5.7 or later
     /// - Parameter caseId: The ID of the test case to retrieve attachments from
     case forCase(caseId: Int)
