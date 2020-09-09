@@ -155,6 +155,35 @@ class CaseTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.id!, 2)
     }
+    
+    func testDeleteTest() {
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
+        
+        XCTAssertNoThrow(requestComplete = Self.client.cases.deleteCase(caseId: 88))
+        
+        XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
+                                                    method: .POST,
+                                                    uri: "/index.php?/api/v2/delete_case/88",
+                                                    headers: .init([
+                                                        ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                                                        ("content-type", "application/json; charset=utf-8"),
+                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Content-Length", "0")] ))),
+                                        try Self.testServer.readInbound()))
+        
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+
+        let responseBody = "{}".data(using: .utf8)!
+        var responseBuffer = Self.allocator.buffer(capacity: 500)
+        responseBuffer.writeData(responseBody)
+
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data, responseBody)
+    }
 }
 
 func getTestCaseResponse() -> MockCase {
