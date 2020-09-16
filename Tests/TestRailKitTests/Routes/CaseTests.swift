@@ -198,8 +198,8 @@ func getUpdatedTestCase() -> UpdatedTestRailCase {
     return UpdatedCase(propertyId: 5)
 }
 
-func getMockTestCasesResponse() -> MockCases {
+func getMockTestCasesResponse() -> [MockCase] {
     let mockCase = getTestCaseResponse()
-    return MockCases(data: [mockCase])
+    return [mockCase]
 }
 
