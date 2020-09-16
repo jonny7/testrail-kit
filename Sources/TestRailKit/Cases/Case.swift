@@ -3,7 +3,7 @@ public enum Case {
     case update
     case single(caseId: Int)
     case many(projectId: Int, suiteId: Int?, filter: [TestRailFilterOption: TestRailFilterValueBuilder]?)
-    
+
     var uri: (String, String?) {
         switch self {
         case .add:

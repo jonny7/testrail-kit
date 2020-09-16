@@ -49,14 +49,24 @@ struct TestRailDefaultAPIHandler {
                 if TM.self is TestRailDataResponse.Type {
                     let model = TestRailDataResponse(data: response) as! TM
                     return self.eventLoop.makeSucceededFuture(model)
-                } else if TM.self is TestRailAttachments.Type {
+                }
+                if TM.self is TestRailAttachments.Type {
                     let decode = try self.decoder.decode([TestRailAttachment].self, from: response)
                     let model = TestRailAttachments(data: decode) as! TM
                     return self.eventLoop.makeSucceededFuture(model)
-                } else {
-                    let model = try self.decoder.decode(TM.self, from: response)
+                }
+                if TM.self is TestRailCases.Type {
+                    let decode = try self.decoder.decode([TestRailCase].self, from: response)
+                    let model = TestRailCases(data: decode) as! TM
                     return self.eventLoop.makeSucceededFuture(model)
                 }
+                if TM.self is TestRailCasesFields.Type {
+                    let decode = try self.decoder.decode([TestRailCaseField].self, from: response)
+                    let model = TestRailCasesFields(data: decode) as! TM
+                    return self.eventLoop.makeSucceededFuture(model)
+                }
+                let model = try self.decoder.decode(TM.self, from: response)
+                return self.eventLoop.makeSucceededFuture(model)
             } catch {
                 return self.eventLoop.makeFailedFuture(error)
             }

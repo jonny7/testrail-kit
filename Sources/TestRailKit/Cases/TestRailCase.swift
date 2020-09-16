@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TestRailCase: TestRailModel, TestCase {
+public struct TestRailCase: TestCase {
     public var id: Int?
     public var title: String
     public var sectionId: Int
@@ -53,3 +53,5 @@ public struct TestRailCase: TestRailModel, TestCase {
         self.customGoals = customGoals
     }
 }
+
+extension TestRailCase: TestRailModel {}
