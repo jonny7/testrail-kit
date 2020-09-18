@@ -46,26 +46,7 @@ struct TestRailDefaultAPIHandler {
     public func send<TM: TestRailModel>(method: HTTPMethod, path: String, query: String = "", body: HTTPClient.Body = .data(Data()), headers: HTTPHeaders = [:]) -> EventLoopFuture<TM> {
         return self._send(method: method, path: path, query: query, body: body, headers: headers).flatMap { response in
             do {
-                if TM.self is TestRailDataResponse.Type {
-                    let model = TestRailDataResponse(data: response) as! TM
-                    return self.eventLoop.makeSucceededFuture(model)
-                }
-                if TM.self is TestRailAttachments.Type {
-                    let decode = try self.decoder.decode([TestRailAttachment].self, from: response)
-                    let model = TestRailAttachments(data: decode) as! TM
-                    return self.eventLoop.makeSucceededFuture(model)
-                }
-                if TM.self is TestRailCases.Type {
-                    let decode = try self.decoder.decode([TestRailCase].self, from: response)
-                    let model = TestRailCases(data: decode) as! TM
-                    return self.eventLoop.makeSucceededFuture(model)
-                }
-                if TM.self is TestRailCasesFields.Type {
-                    let decode = try self.decoder.decode([TestRailCaseField].self, from: response)
-                    let model = TestRailCasesFields(data: decode) as! TM
-                    return self.eventLoop.makeSucceededFuture(model)
-                }
-                let model = try self.decoder.decode(TM.self, from: response)
+                let model = try decodeRelevantType(T: TM.self, response: response, decoder: self.decoder)
                 return self.eventLoop.makeSucceededFuture(model)
             } catch {
                 return self.eventLoop.makeFailedFuture(error)
