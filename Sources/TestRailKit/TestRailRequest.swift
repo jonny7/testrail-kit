@@ -1,11 +1,10 @@
 import Foundation
 import NIO
-import NIOFoundationCompat
 import NIOHTTP1
 import AsyncHTTPClient
 
 /// Default Handler for TestRail
-struct TestRailDefaultAPIHandler {
+struct TestRailAPIHandler {
     
     public let httpClient: HTTPClient
     private let username: String
@@ -46,7 +45,7 @@ struct TestRailDefaultAPIHandler {
     public func send<TM: TestRailModel>(method: HTTPMethod, path: String, query: String = "", body: HTTPClient.Body = .data(Data()), headers: HTTPHeaders = [:]) -> EventLoopFuture<TM> {
         return self._send(method: method, path: path, query: query, body: body, headers: headers).flatMap { response in
             do {
-                let model = try decodeRelevantType(T: TM.self, response: response, decoder: self.decoder)
+                let model = try Self.decodeRelevantType(decodeType: TM.self, response: response, decoder: self.decoder)
                 return self.eventLoop.makeSucceededFuture(model)
             } catch {
                 return self.eventLoop.makeFailedFuture(error)

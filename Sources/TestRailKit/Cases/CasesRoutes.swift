@@ -29,14 +29,14 @@ public struct TestRailCaseRoutes: CaseRoutes {
 
     public var headers: HTTPHeaders = [:]
 
-    private let apiHandler: TestRailDefaultAPIHandler
+    private let apiHandler: TestRailAPIHandler
 
-    init(apiHandler: TestRailDefaultAPIHandler) {
+    init(apiHandler: TestRailAPIHandler) {
         self.apiHandler = apiHandler
     }
     
     public func addCase<TM>(type: Case, id: Int, testCase: TM) throws -> EventLoopFuture<TestRailCase> where TM: TestRailModel {
-        let body = try encodeTestRailModel(data: testCase)
+        let body = try testCase.encodeTestRailModel(data: testCase)
         return apiHandler.send(method: .POST, path: "\(type.uri.0)\(id)", body: .string(body), headers: headers)
     }
     

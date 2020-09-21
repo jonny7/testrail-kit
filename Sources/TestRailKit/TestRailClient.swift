@@ -4,7 +4,7 @@ import Foundation
 
 public final class TestRailClient {
     
-    var handler: TestRailDefaultAPIHandler
+    var handler: TestRailAPIHandler
     public var attachments: AttachmentRoutes
     public var cases: CaseRoutes
     public var caseFields: CaseFieldRoutes
@@ -19,7 +19,7 @@ public final class TestRailClient {
     ///   - testRailUrl: Location of your TestRail instance eg https://example.testrail.com or https://company-testail.com
     ///   - port: Port to operate on
     public init(httpClient: HTTPClient, eventLoop: EventLoop, username: String, apiKey: String, testRailUrl: String, port: Int?) {
-        handler = TestRailDefaultAPIHandler(httpClient: httpClient, eventLoop: eventLoop, username: username, apiKey: apiKey, testRailBaseURL: testRailUrl, port: port)
+        handler = TestRailAPIHandler(httpClient: httpClient, eventLoop: eventLoop, username: username, apiKey: apiKey, testRailBaseURL: testRailUrl, port: port)
         attachments = TestRailAttachmentRoutes(apiHandler: handler)
         cases = TestRailCaseRoutes(apiHandler: handler)
         caseFields = TestRailCaseFieldRoutes(apiHandler: handler)

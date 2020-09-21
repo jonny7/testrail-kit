@@ -58,7 +58,7 @@ class CaseTests: XCTestCase {
     }
     
     func testGetCases () {
-        var requestComplete: EventLoopFuture<TestRailCases>!
+        var requestComplete: EventLoopFuture<[TestRailCase]>!
         XCTAssertNoThrow(requestComplete = Self.client.cases.getCase(type: .many(projectId: 3, suiteId: 5, filter: [
             .template_id: .integer(10),
             .type_id: .integer(5)
@@ -85,7 +85,7 @@ class CaseTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data[0].title, "Response One")
+        XCTAssertEqual(response.first?.title, "Response One")
     }
     
     func testAddCase() {

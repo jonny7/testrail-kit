@@ -8,9 +8,9 @@ public struct TestRailCaseTypeRoutes: CaseTypeRoutes {
 
     public var headers: HTTPHeaders = [:]
         
-    private let apiHandler: TestRailDefaultAPIHandler
+    private let apiHandler: TestRailAPIHandler
     
-    init(apiHandler: TestRailDefaultAPIHandler) {
+    init(apiHandler: TestRailAPIHandler) {
         self.apiHandler = apiHandler
     }
     
