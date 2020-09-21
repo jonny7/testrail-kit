@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TestRailAttachment: Codable {
+public struct TestRailAttachment: TestRailModel {
     public var id: Int
     public var name: String
     public var filename: String

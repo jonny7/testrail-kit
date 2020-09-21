@@ -152,7 +152,7 @@ class AttachmentTests: XCTestCase {
     }
 
     func testGetAttachmentForCase() {
-        var requestComplete: EventLoopFuture<TestRailAttachments>!
+        var requestComplete: EventLoopFuture<[TestRailAttachment]>!
         XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forCase(caseId: 31)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
@@ -177,12 +177,12 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data.first?.caseId, 3414)
-        XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, 3414)
+        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
     }
 
     func testGetAttachmentsForPlan() {
-        var requestComplete: EventLoopFuture<TestRailAttachments>!
+        var requestComplete: EventLoopFuture<[TestRailAttachment]>!
         XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forPlan(planId: 32)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
@@ -207,12 +207,12 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data.first?.caseId, 3414)
-        XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, 3414)
+        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
     }
 
     func testGetAttachmentsForPlanEntry() {
-        var requestComplete: EventLoopFuture<TestRailAttachments>!
+        var requestComplete: EventLoopFuture<[TestRailAttachment]>!
         XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forPlanEntry(planId: 6, entryId: 29)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
@@ -237,12 +237,12 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data.first?.caseId, 3414)
-        XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, 3414)
+        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
     }
 
     func testGetAttachmentsForRun() {
-        var requestComplete: EventLoopFuture<TestRailAttachments>!
+        var requestComplete: EventLoopFuture<[TestRailAttachment]>!
         XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forRun(runId: 65)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
@@ -273,12 +273,12 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data.first?.caseId, 3414)
-        XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, 3414)
+        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
     }
 
     func testGetAttachmentsForTest() {
-        var requestComplete: EventLoopFuture<TestRailAttachments>!
+        var requestComplete: EventLoopFuture<[TestRailAttachment]>!
         XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forTest(testId: 1003)))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
@@ -303,8 +303,8 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data.first?.caseId, 3414)
-        XCTAssertEqual(response.data.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, 3414)
+        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
     }
 
     func testGetAttachment() {

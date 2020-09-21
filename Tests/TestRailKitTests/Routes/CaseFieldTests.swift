@@ -27,7 +27,7 @@ class CaseFieldTests: XCTestCase {
     }
     
     func testGetCaseFields() {
-        var requestComplete: EventLoopFuture<TestRailCasesFields>!
+        var requestComplete: EventLoopFuture<[TestRailCaseField]>!
         XCTAssertNoThrow(requestComplete = Self.client.caseFields.get())
             
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
@@ -49,7 +49,7 @@ class CaseFieldTests: XCTestCase {
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data[0].systemName, responseBody[0].system_name)
+        XCTAssertEqual(response.first?.systemName, responseBody[0].system_name)
     }
 }
 

@@ -1,1 +1,1 @@
-public class UpdatedTestRailCase: TestRailModel {}
+open class UpdatedTestRailCase: TestRailModel {}

@@ -10,7 +10,7 @@ public protocol AttachmentRoutes {
 
     /// This method allows you to get attachments from various TestRail objects via multiple different endpoints
     /// for specifics on these particular methods please see `GetAttachments`
-    func getAttachment(attachment: Attachment) -> EventLoopFuture<TestRailAttachments>
+    func getAttachment(attachment: Attachment) -> EventLoopFuture<[TestRailAttachment]>
 
     /// This method allows you to perform data actions, namely retrieve a testrail attachment or delete one
     /// for specifics on these particular methods please see `AttachmentData`
@@ -24,9 +24,9 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
 
     public var headers: HTTPHeaders = [:]
         
-    private let apiHandler: TestRailDefaultAPIHandler
+    private let apiHandler: TestRailAPIHandler
     
-    init(apiHandler: TestRailDefaultAPIHandler) {
+    init(apiHandler: TestRailAPIHandler) {
         self.apiHandler = apiHandler
     }
     
@@ -40,7 +40,7 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
         return apiHandler.send(method: .POST, path: attachment.uri, body: .data(file), headers: multipart)
     }
     
-    public func getAttachment(attachment: Attachment) -> EventLoopFuture<TestRailAttachments> {
+    public func getAttachment(attachment: Attachment) -> EventLoopFuture<[TestRailAttachment]> {
         return apiHandler.send(method: .GET, path: attachment.uri, headers: headers)
     }
     
