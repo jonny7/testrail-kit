@@ -1,6 +1,9 @@
-import Foundation
-
-public struct TestRailCaseField: CaseField {
+public struct AddedTestRailCaseField: CaseField, AddedCaseField {
+    var entityId: Int
+    var locationId: Int
+    var isMulti: Int
+    var statusId: Int
+    var isSystem: Int
     var id: Int
     @EncodedFromInt var isActive: Bool
     var typeId: Int
@@ -14,4 +17,4 @@ public struct TestRailCaseField: CaseField {
     var templateIds: [Int]
 }
 
-extension TestRailCaseField: TestRailModel {}
+extension AddedTestRailCaseField: TestRailModel {}

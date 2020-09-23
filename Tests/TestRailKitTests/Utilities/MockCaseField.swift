@@ -1,10 +1,10 @@
 @testable import TestRailKit
 
 struct MockCaseField: Codable {
-    var is_active: Bool
+    var is_active: Int
     var type_id: Int
     var display_order: Int
-    var include_all: Bool
+    var include_all: Int
     var template_ids: [Int]
     var configs: [MockConfig]
     var description: String
@@ -27,7 +27,9 @@ struct MockCaseFieldContext: Codable {
 
 struct MockCaseFieldOptions: Codable {
     var is_required: Bool
-    var default_value: String
-    var format: String
-    var rows: Int
+    var default_value: String?
+    var format: String?
+    var rows: String?
+    var items: String?
+    var id: String
 }

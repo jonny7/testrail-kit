@@ -4,6 +4,6 @@ import XCTest
 class UtilityTests: XCTestCase {
     func testTestRailDecoder() {
         let attachment = MockAttachmentIdentifier(attachment_id: 100)
-        XCTAssertNoThrow(try attachment.encodeTestRailModel(data: attachment.attachment_id))
+        XCTAssertNoThrow(try attachment.encodeTestRailModel())
     }
 }
