@@ -59,7 +59,7 @@ class CaseFieldTests: XCTestCase {
     
         XCTAssertNoThrow(requestComplete = try! Self.client.caseFields.add(caseField: Self.addCaseFieldRequest))
         
-        var requestBuffer = Self.allocator.buffer(capacity: 250)
+        var requestBuffer = Self.allocator.buffer(capacity: 300)
         try! requestBuffer.writeJSONEncodable(Self.addCaseFieldRequest)
         let contentLength = requestBuffer.readableBytes
         
@@ -72,7 +72,6 @@ class CaseFieldTests: XCTestCase {
                                                         ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
                                                         ("Content-Length", "\(contentLength)")] ))),
                                         try Self.testServer.readInbound()))
-
         XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.testServer.readInbound()))
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
 
