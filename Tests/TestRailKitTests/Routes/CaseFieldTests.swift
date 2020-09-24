@@ -76,7 +76,7 @@ class CaseFieldTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
 
 
-        var responseBuffer = Self.allocator.buffer(capacity: 250)
+        var responseBuffer = Self.allocator.buffer(capacity: 300)
         try! responseBuffer.writeJSONEncodable(Self.addedCaseFieldResponse)
 
         XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
