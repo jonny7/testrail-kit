@@ -1,35 +1,20 @@
 import XCTest
 import NIO
-import NIOTestUtils
-import AsyncHTTPClient
-import Foundation
 @testable import TestRailKit
 
 class AttachmentTests: XCTestCase {
     
-    static var group: MultiThreadedEventLoopGroup!
-    static var testServer: NIOHTTP1TestServer!
-    static var allocator = ByteBufferAllocator()
-    static var httpClient: HTTPClient!
-    static var client: TestRailClient!
-    static let file = Data.init(base64Encoded: base64EncodedImage)!
-    
-    override class func setUp() {
-        Self.group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        Self.testServer = NIOHTTP1TestServer(group: group)
-        Self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(group))
-        Self.client = TestRailClient(httpClient: Self.httpClient, eventLoop: Self.group.next(), username: "user@testrail.io", apiKey: "1234abcd", testRailUrl: "http://127.0.0.1", port: Self.testServer.serverPort)
-    }
+    static var utilities = AttachmentUtilities()
     
     override class func tearDown() {
         //XCTAssertNoThrow(try testServer.stop()) this is a nio problem and should remain. Omitting for GH Actions only
-        XCTAssertNoThrow(try httpClient.syncShutdown())
-        XCTAssertNoThrow(try group.syncShutdownGracefully())
+        XCTAssertNoThrow(try Self.utilities.httpClient.syncShutdown())
+        XCTAssertNoThrow(try Self.utilities.group.syncShutdownGracefully())
     }
     
     func testAddAttachmentToPlan() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toPlan(planId: 1), file: Self.file))
+        requestComplete = Self.utilities.client.attachments.addAttachment(attachment: .toPlan(planId: 1), file: Self.utilities.file)
             
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -37,30 +22,28 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                        ("Content-Length", "\(Self.file.count)")] ))),
-                                        try Self.testServer.readInbound()))
+                                                                    ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                                                        ("Content-Length", "\(Self.utilities.file.count)")] ))),
+                                        try Self.utilities.testServer.readInbound()))
         
-        let requestBuffer = Self.allocator.buffer(data: Self.file)
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.testServer.readInbound()))
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
-        
-        
-        let responseBody = MockAttachmentIdentifier(attachment_id: 443)
-        var responseBuffer = Self.allocator.buffer(capacity: 50)
-        try! responseBuffer.writeJSONEncodable(responseBody)
-        
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        let requestBuffer = Self.utilities.allocator.buffer(data: Self.utilities.file)
+        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
+
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+    
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.attachmentId, 443)
+        XCTAssertEqual(response.attachmentId, Self.utilities.attachmentIdentifierDecoded.attachmentId)
     }
 
     func testAddAttachmentToTestPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toTestPlanEntry(planId: 1, entryId: 2), file: Self.file))
+        requestComplete = Self.utilities.client.attachments.addAttachment(attachment: .toTestPlanEntry(planId: 1, entryId: 2), file: Self.utilities.file)
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -68,30 +51,29 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                        ("Content-Length", "\(Self.file.count)")] ))),
-                                        try Self.testServer.readInbound()))
+                                                                    ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                                                        ("Content-Length", "\(Self.utilities.file.count)")] ))),
+                                        try Self.utilities.testServer.readInbound()))
 
-        let requestBuffer = Self.allocator.buffer(data: Self.file)
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.testServer.readInbound()))
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        let requestBuffer = Self.utilities.allocator.buffer(data: Self.utilities.file)
+        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
 
-        let responseBody = MockAttachmentIdentifier(attachment_id: 443)
-        var responseBuffer = Self.allocator.buffer(capacity: 50)
-        try! responseBuffer.writeJSONEncodable(responseBody)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.attachmentId, 443)
+        XCTAssertEqual(response.attachmentId, Self.utilities.attachmentIdentifierDecoded.attachmentId)
     }
 
     func testAddAttachmentToResult() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toResult(resultId: 5), file: Self.file))
+        requestComplete = Self.utilities.client.attachments.addAttachment(attachment: .toResult(resultId: 5), file: Self.utilities.file)
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -99,30 +81,29 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                        ("Content-Length", "\(Self.file.count)")] ))),
-                                        try Self.testServer.readInbound()))
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                                                        ("Content-Length", "\(Self.utilities.file.count)")] ))),
+                                        try Self.utilities.testServer.readInbound()))
 
-        let requestBuffer = Self.allocator.buffer(data: Self.file)
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.testServer.readInbound()))
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        let requestBuffer = Self.utilities.allocator.buffer(data: Self.utilities.file)
+        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
 
-        let responseBody = MockAttachmentIdentifier(attachment_id: 443)
-        var responseBuffer = Self.allocator.buffer(capacity: 50)
-        try! responseBuffer.writeJSONEncodable(responseBody)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.attachmentId, 443)
+        XCTAssertEqual(response.attachmentId, Self.utilities.attachmentIdentifierDecoded.attachmentId)
     }
 
     func testAddAttachmentToRun() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.addAttachment(attachment: .toRun(rundId: 3), file: Self.file))
+        requestComplete = Self.utilities.client.attachments.addAttachment(attachment: .toRun(rundId: 3), file: Self.utilities.file)
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -130,30 +111,29 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "multipart/form-data"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
-                                                        ("Content-Length", "\(Self.file.count)")] ))),
-                                        try Self.testServer.readInbound()))
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                                                        ("Content-Length", "\(Self.utilities.file.count)")] ))),
+                                        try Self.utilities.testServer.readInbound()))
 
-        let requestBuffer = Self.allocator.buffer(data: Self.file)
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.testServer.readInbound()))
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        let requestBuffer = Self.utilities.allocator.buffer(data: Self.utilities.file)
+        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
 
-        let responseBody = MockAttachmentIdentifier(attachment_id: 443)
-        var responseBuffer = Self.allocator.buffer(capacity: 50)
-        try! responseBuffer.writeJSONEncodable(responseBody)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.attachmentId, 443)
+        XCTAssertEqual(response.attachmentId, Self.utilities.attachmentIdentifierDecoded.attachmentId)
     }
 
     func testGetAttachmentForCase() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forCase(caseId: 31)))
+        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forCase(caseId: 31))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -161,29 +141,27 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        let responseBody = [MockAttachment(id: 44, name: "an-image.jpg", filename: "a-filename.jpg", size: 166944, created_on: 1554737184, project_id: 14, case_id: 3414, test_change_id: 17899, user_id: 10, result_id: 52)]
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
-        var responseBuffer = Self.allocator.buffer(capacity: 500)
-        try! responseBuffer.writeJSONEncodable(responseBody)
-
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.caseId, 3414)
-        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, Self.utilities.attachmentsForCaseDecoded.first?.caseId)
+        XCTAssertEqual(response.first?.createdOn, Self.utilities.attachmentsForCaseDecoded.first?.createdOn)
     }
 
     func testGetAttachmentsForPlan() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forPlan(planId: 32)))
+        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forPlan(planId: 32))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -191,29 +169,27 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        let responseBody = [MockAttachment(id: 44, name: "an-image.jpg", filename: "a-filename.jpg", size: 166944, created_on: 1554737184, project_id: 14, case_id: 3414, test_change_id: 17899, user_id: 10, result_id: 52)]
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
-        var responseBuffer = Self.allocator.buffer(capacity: 500)
-        try! responseBuffer.writeJSONEncodable(responseBody)
-
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.caseId, 3414)
-        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, Self.utilities.attachmentsForCaseDecoded.first?.caseId)
+        XCTAssertEqual(response.first?.createdOn, Self.utilities.attachmentsForCaseDecoded.first?.createdOn)
     }
 
     func testGetAttachmentsForPlanEntry() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forPlanEntry(planId: 6, entryId: 29)))
+        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forPlanEntry(planId: 6, entryId: 29))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -221,29 +197,27 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        let responseBody = [MockAttachment(id: 44, name: "an-image.jpg", filename: "a-filename.jpg", size: 166944, created_on: 1554737184, project_id: 14, case_id: 3414, test_change_id: 17899, user_id: 10, result_id: 52)]
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
-        var responseBuffer = Self.allocator.buffer(capacity: 500)
-        try! responseBuffer.writeJSONEncodable(responseBody)
-
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.caseId, 3414)
-        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, Self.utilities.attachmentsForCaseDecoded.first?.caseId)
+        XCTAssertEqual(response.first?.createdOn, Self.utilities.attachmentsForCaseDecoded.first?.createdOn)
     }
 
     func testGetAttachmentsForRun() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forRun(runId: 65)))
+        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forRun(runId: 65))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -251,35 +225,34 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        let responseBody = [MockAttachment(id: 44, name: "an-image.jpg", filename: "a-filename.jpg", size: 166944, created_on: 1554737184, project_id: 14, case_id: 3414, test_change_id: 17899, user_id: 10, result_id: 52)]
 
-        var responseBuffer = Self.allocator.buffer(capacity: 500)
-        try! responseBuffer.writeJSONEncodable(responseBody)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
                                                                        status: .ok,
                                                                        headers: .init([
                                                                         ("Content-Type", "image/png"),
                                                                         ("Content-Transfer-Encoding", "binary")]
                                                                        ))))
         )
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.caseId, 3414)
-        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, Self.utilities.attachmentsForCaseDecoded.first?.caseId)
+        XCTAssertEqual(response.first?.createdOn, Self.utilities.attachmentsForCaseDecoded.first?.createdOn)
     }
 
     func testGetAttachmentsForTest() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.getAttachment(attachment: .forTest(testId: 1003)))
+        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forTest(testId: 1003))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -287,29 +260,27 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        let responseBody = [MockAttachment(id: 44, name: "an-image.jpg", filename: "a-filename.jpg", size: 166944, created_on: 1554737184, project_id: 14, case_id: 3414, test_change_id: 17899, user_id: 10, result_id: 52)]
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
-        var responseBuffer = Self.allocator.buffer(capacity: 500)
-        try! responseBuffer.writeJSONEncodable(responseBody)
-
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.caseId, 3414)
-        XCTAssertEqual(response.first?.createdOn, Date.init(timeIntervalSince1970: 1554737184))
+        XCTAssertEqual(response.first?.caseId, Self.utilities.attachmentsForCaseDecoded.first?.caseId)
+        XCTAssertEqual(response.first?.createdOn, Self.utilities.attachmentsForCaseDecoded.first?.createdOn)
     }
 
     func testGetAttachment() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.attachmentData(attachmentData: .get(attachmentId: 622)))
+        requestComplete = Self.utilities.client.attachments.attachmentData(attachmentData: .get(attachmentId: 622))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .GET,
@@ -317,30 +288,30 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
 
-        let responseBuffer = Self.allocator.buffer(data: Self.file)
+        let responseBuffer = Self.utilities.allocator.buffer(data: Self.utilities.file)
 
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
                                                                        status: .ok,
                                                                        headers: .init([
                                                                         ("Content-Type", "image/png")
                                                                        ] )))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.data, Self.file)
+        XCTAssertEqual(response.data, Self.utilities.file)
     }
     
     func testDeleteAttachment() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = Self.client.attachments.attachmentData(attachmentData: .delete(attachmentId: 622)))
+        requestComplete = Self.utilities.client.attachments.attachmentData(attachmentData: .delete(attachmentId: 622))
 
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
@@ -348,22 +319,22 @@ class AttachmentTests: XCTestCase {
                                                     headers: .init([
                                                         ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                                                         ("content-type", "application/json; charset=utf-8"),
-                                                        ("Host", "127.0.0.1:\(Self.testServer.serverPort)"),
+                                                        ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
-                                        try Self.testServer.readInbound()))
+                                        try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.testServer.readInbound()))
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         let emptyResponse = "{}".data(using: .utf8)!
-        let responseBuffer = Self.allocator.buffer(data: emptyResponse)
+        let responseBuffer = Self.utilities.allocator.buffer(data: emptyResponse)
 
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),
                                                                        status: .ok,
                                                                        headers: .init([
                                                                         ("Content-Type", "application/json")
                                                                        ] )))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.testServer.writeOutbound(.end(nil)))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data, emptyResponse)
