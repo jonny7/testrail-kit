@@ -3,6 +3,8 @@ import Foundation
 import NIO
 import NIOHTTP1
 
+extension TestRailAPIHandler {}
+
 /// Default Handler for TestRail
 struct TestRailAPIHandler {
 
@@ -17,7 +19,8 @@ struct TestRailAPIHandler {
     }
     return "\(testRailBaseURL):\(unwrappedPort)"
   }
-  private let decoder = JSONDecoder()
+  internal var decoder = JSONDecoder()
+  internal let encoder = JSONEncoder()
   var eventLoop: EventLoop
   private var basicAuth: String {
     return "\(self.username):\(self.apiKey)".data(using: .utf8)?.base64EncodedString()
@@ -34,8 +37,8 @@ struct TestRailAPIHandler {
     self.apiKey = apiKey
     self.testRailBaseURL = testRailBaseURL
     self.port = port
-    decoder.dateDecodingStrategy = .secondsSince1970
-    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    self.setDecoding()
+    self.setEncoding()
   }
 
   /// public method that api exposes

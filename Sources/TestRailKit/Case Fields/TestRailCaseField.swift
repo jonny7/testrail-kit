@@ -1,8 +1,8 @@
 import Foundation
 
 public struct TestRailCaseField: CaseField {
-  var id: Int
-  @EncodedFromInt var isActive: Bool
+  var id: Int?
+  var isActive: Bool
   var typeId: Int
   var name: String
   var systemName: String
@@ -10,7 +10,7 @@ public struct TestRailCaseField: CaseField {
   var description: String
   var configs: [CaseFieldConfig]
   var displayOrder: Int
-  @EncodedFromInt var includeAll: Bool
+  var includeAll: Bool
   var templateIds: [Int]
 }
 
