@@ -1,5 +1,6 @@
 import XCTest
 import NIO
+import NIOHTTP1
 @testable import TestRailKit
 
 class CaseTests: XCTestCase {
@@ -73,7 +74,7 @@ class CaseTests: XCTestCase {
         var requestComplete: EventLoopFuture<TestRailCase>!
         XCTAssertNoThrow(requestComplete = try! Self.utilities.client.cases.addCase(type: .add, id: 275, testCase: Self.utilities.caseRequestObject))
         
-        var requestBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.caseRequestObject.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
 
@@ -87,7 +88,11 @@ class CaseTests: XCTestCase {
                                                         ("Content-Length", "\(contentLength)")] ))),
                                         try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        var inboundBody: HTTPServerRequestPart?
+        XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
+        guard case .body(let body) = try! XCTUnwrap(inboundBody) else { XCTFail("Expected to get a body"); return }
+        
+        XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailCase.self, from: body).title, "API Added Test")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
@@ -108,7 +113,7 @@ class CaseTests: XCTestCase {
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 250)
         requestBuffer.writeData(Self.utilities.updatedCaseEncoded)
         let contentLength = requestBuffer.readableBytes
-        #warning("Still encondes incorrectly")
+
         XCTAssertNoThrow(XCTAssertEqual(.head(.init(version: .init(major: 1, minor: 1),
                                                     method: .POST,
                                                     uri: "/index.php?/api/v2/update_case/88",
@@ -119,7 +124,11 @@ class CaseTests: XCTestCase {
                                                         ("Content-Length", "\(contentLength)")] ))),
                                         try Self.utilities.testServer.readInbound()))
 
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        var inboundBody: HTTPServerRequestPart?
+        XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
+        guard case .body(let body) = try! XCTUnwrap(inboundBody) else { XCTFail("Expected to get a body"); return }
+
+        XCTAssertEqual(body.getString(at: body.readerIndex, length: body.readableBytes)!, #"{"property_id":5}"#)
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
 

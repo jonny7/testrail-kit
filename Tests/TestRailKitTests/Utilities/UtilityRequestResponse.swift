@@ -59,7 +59,7 @@ let caseResp = """
 """
 let caseRequest = TestRailCase(id: nil, title: "API Added Test", sectionId: 82, templateId: 2, typeId: 7, priorityId: 2, milestoneId: nil, refs: nil, createdBy: 1, createdOn: Date(timeIntervalSince1970: 1583263388), updatedBy: 9, updatedOn: Date(timeIntervalSince1970: 1601037642), estimate: nil, estimateForecast: nil, suiteId: 3, displayOrder: 3, customAutomationType: 1, customTestrailLabel: nil, customPreconds: "Preconditions are...", customSteps: nil, customExpected: nil, customStepsSeparated: [TestRailStep(content: "Logon with username and Password", expected: "Everything Works")], customMission: nil, customGoals: nil)
 
-let updateCaseObject = UpdatedCase(propertyId: 5)
+//let updateCaseObject = UpdatedCase(propertyId: 5)
 
 // Mark: CaseFields
 let newCaseFieldObject = TestRailNewCaseField(type: .multiselect, name: "Brand New Case", label: "Case Label", description: "very descriptive", includeAll: true, templateIds: [], config: CaseFieldConfig(context: CaseFieldContext(isGlobal: true, projectIds: [1]), options: CaseFieldOptions(isRequired: true, defaultValue: nil, format: nil, rows: nil, items: nil), id: nil))

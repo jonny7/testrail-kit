@@ -3,8 +3,6 @@ import Foundation
 import NIO
 import NIOHTTP1
 
-extension TestRailAPIHandler {}
-
 /// Default Handler for TestRail
 struct TestRailAPIHandler {
 

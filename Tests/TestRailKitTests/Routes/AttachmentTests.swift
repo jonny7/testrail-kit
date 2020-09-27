@@ -294,7 +294,6 @@ class AttachmentTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-
         let responseBuffer = Self.utilities.allocator.buffer(data: Self.utilities.file)
 
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1),

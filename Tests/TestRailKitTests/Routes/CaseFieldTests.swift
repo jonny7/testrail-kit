@@ -1,5 +1,6 @@
 import XCTest
 import NIO
+import NIOHTTP1
 @testable import TestRailKit
 
 class CaseFieldTests: XCTestCase {
@@ -7,7 +8,7 @@ class CaseFieldTests: XCTestCase {
     static var utilities = CaseFieldUtilities()
 
     override class func tearDown() {
-        //XCTAssertNoThrow(try testServer.stop()) this is a nio problem and should remain. Omitting for GH Actions only
+        //XCTAssertNoThrow(try Self.utilities.testServer.stop()) //this is a nio problem and should remain. Omitting for GH Actions only
         XCTAssertNoThrow(try Self.utilities.httpClient.syncShutdown())
         XCTAssertNoThrow(try Self.utilities.group.syncShutdownGracefully())
     }
@@ -25,6 +26,8 @@ class CaseFieldTests: XCTestCase {
                                                         ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "0")] ))),
                                         try Self.utilities.testServer.readInbound()))
+        
+        XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
         responseBuffer.writeString(Self.utilities.caseFieldsResponseString)
@@ -42,7 +45,7 @@ class CaseFieldTests: XCTestCase {
 
         XCTAssertNoThrow(requestComplete = try! Self.utilities.client.caseFields.add(caseField: Self.utilities.newCaseFieldRequestObject))
 
-        var requestBuffer = Self.utilities.allocator.buffer(capacity: 300)
+        var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.newCaseFieldRequestObject, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
 
@@ -55,8 +58,12 @@ class CaseFieldTests: XCTestCase {
                                                         ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
                                                         ("Content-Length", "\(contentLength)")] ))),
                                         try Self.utilities.testServer.readInbound()))
-
-        XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
+        
+        var inboundBody: HTTPServerRequestPart?
+        XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
+        guard case .body(let body) = try! XCTUnwrap(inboundBody) else { XCTFail("Expected to get a body"); return }
+        
+        XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewCaseField.self, from: body).name, "Brand New Case")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 300)
