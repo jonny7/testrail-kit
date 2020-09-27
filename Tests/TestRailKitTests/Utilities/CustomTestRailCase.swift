@@ -1,5 +1,6 @@
-@testable import TestRailKit
 import Foundation
+
+@testable import TestRailKit
 
 struct CustomTestRailCase: TestCase, TestRailModel {
     var id: Int?
