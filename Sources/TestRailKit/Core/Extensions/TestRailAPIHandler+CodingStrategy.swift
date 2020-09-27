@@ -3,7 +3,7 @@ extension TestRailAPIHandler {
         self.decoder.keyDecodingStrategy = .convertFromSnakeCase
         self.decoder.dateDecodingStrategy = .secondsSince1970
     }
-    
+
     mutating func setEncoding() {
         self.encoder.keyEncodingStrategy = .convertToSnakeCase
     }

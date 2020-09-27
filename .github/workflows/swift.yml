@@ -10,8 +10,6 @@ on:
 
 jobs:
   linux:
-    container: 
-      image: swift:5.2.5-bionic
     name: Running Tests
     runs-on: ubuntu-20.04
     
