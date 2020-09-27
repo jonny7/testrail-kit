@@ -10,6 +10,8 @@ on:
 
 jobs:
   linux:
+    container: 
+      image: swift:5.3-focal
     name: Running Tests
     runs-on: ubuntu-20.04
     
