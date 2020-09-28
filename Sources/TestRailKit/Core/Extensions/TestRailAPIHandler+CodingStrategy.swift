@@ -6,5 +6,6 @@ extension TestRailAPIHandler {
 
     mutating func setEncoding() {
         self.encoder.keyEncodingStrategy = .convertToSnakeCase
+        self.encoder.outputFormatting = .sortedKeys
     }
 }

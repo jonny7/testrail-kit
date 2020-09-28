@@ -118,6 +118,7 @@ class CaseTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
         XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailCase.self, from: body).title, "API Added Test")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
@@ -164,7 +165,8 @@ class CaseTests: XCTestCase {
             XCTFail("Expected to get a body")
             return
         }
-
+        
+        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
         XCTAssertEqual(body.getString(at: body.readerIndex, length: body.readableBytes)!, #"{"property_id":5}"#)
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
