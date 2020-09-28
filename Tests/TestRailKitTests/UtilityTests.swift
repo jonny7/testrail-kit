@@ -2,9 +2,12 @@ import XCTest
 @testable import TestRailKit
 
 class UtilityTests: XCTestCase {
+    
+    let utilities = TestingUtilities()
+    
     func testTestRailDecoder() {
         let attachment = TestRailAttachmentIdentifier(attachmentId: 100)
-        XCTAssertNoThrow(try attachment.encodeTestRailModel())
+        XCTAssertNoThrow(try attachment.encodeTestRailModel(encoder: self.utilities.encoder))
     }
     
     func testBoolToIntCoder() {

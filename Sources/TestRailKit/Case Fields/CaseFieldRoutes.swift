@@ -28,7 +28,7 @@ public struct TestRailCaseFieldRoutes: CaseFieldRoutes {
     }
 
     public func add(caseField: TestRailNewCaseField) throws -> EventLoopFuture<AddedTestRailCaseField> {
-        let body = try caseField.encodeTestRailModel()
+        let body = try caseField.encodeTestRailModel(encoder: apiHandler.encoder)
         return apiHandler.send(
             method: .POST, path: "add_case_field", body: .string(body), headers: headers)
     }

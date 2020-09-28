@@ -7,7 +7,6 @@ public struct TestRailAttachment: TestRailModel {
     public var createdOn: Date
     public var projectId: Int
     public var caseId: Int
-    //public var testChangeId: Int?
     public var userId: Int
     public var resultId: Int?
 }
