@@ -37,7 +37,7 @@ public struct TestRailCaseRoutes: CaseRoutes {
 
     public func addCase<TM>(type: Case, id: Int, testCase: TM) throws -> EventLoopFuture<TestRailCase>
     where TM: TestRailModel {
-        let body = try testCase.encodeTestRailModel()
+        let body = try testCase.encodeTestRailModel(encoder: apiHandler.encoder)
         return apiHandler.send(
             method: .POST, path: "\(type.uri.0)\(id)", body: .string(body), headers: headers)
     }
