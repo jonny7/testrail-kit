@@ -133,3 +133,24 @@ let addedCaseFieldResponse =
       "template_ids": []
     }
     """#
+
+// Mark: CaseType
+let caseTypeResponses = """
+[
+{
+        "id": 1,
+        "is_default": false,
+        "name": "Automated"
+    },
+    {
+        "id": 2,
+        "is_default": false,
+        "name": "Functionality"
+    },
+    {
+        "id": 6,
+        "is_default": true,
+        "name": "Other"
+    }
+]
+"""

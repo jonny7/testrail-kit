@@ -1,17 +1,17 @@
 import Foundation
 
 public struct TestRailCaseField: CaseField {
-    var id: Int?
-    var isActive: Bool
-    var typeId: Int
-    var name: String
-    var systemName: String
-    var label: String
-    var description: String
-    var configs: [CaseFieldConfig]
-    var displayOrder: Int
-    var includeAll: Bool
-    var templateIds: [Int]
+    public var id: Int?
+    public var isActive: Bool
+    public var typeId: Int
+    public var name: String
+    public var systemName: String
+    public var label: String
+    public var description: String
+    public var configs: [CaseFieldConfig]
+    public var displayOrder: Int
+    public var includeAll: Bool
+    public var templateIds: [Int]
 }
 
 extension TestRailCaseField: TestRailModel {}
