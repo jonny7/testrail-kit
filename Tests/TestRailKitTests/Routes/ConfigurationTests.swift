@@ -4,9 +4,9 @@ import XCTest
 
 @testable import TestRailKit
 
-class CaseTypeTests: XCTestCase {
+class ConfigurationTests: XCTestCase {
 
-    static var utilities = CaseTypeUtilities()
+    static var utilities = ConfigurationUtilities()
 
     override class func tearDown() {
         //XCTAssertNoThrow(try Self.utilities.testServer.stop()) //this is a nio problem and should remain. Omitting for GH Actions only
@@ -14,9 +14,9 @@ class CaseTypeTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.group.syncShutdownGracefully())
     }
 
-    func testGetCaseFields() {
-        var requestComplete: EventLoopFuture<[TestRailCaseType]>!
-        requestComplete = Self.utilities.client.caseTypes.get()
+    func testGetConfigs() {
+        var requestComplete: EventLoopFuture<[Configuration]>!
+        requestComplete = Self.utilities.client.configurations.get(projectId: 1)
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -24,7 +24,7 @@ class CaseTypeTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .GET,
-                        uri: "/index.php?/api/v2/get_case_types",
+                        uri: "/index.php?/api/v2/get_configs/1",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
@@ -36,7 +36,7 @@ class CaseTypeTests: XCTestCase {
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
-        responseBuffer.writeString(Self.utilities.caseTypeResponseString)
+        responseBuffer.writeString(Self.utilities.configurationResponseString)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -44,6 +44,6 @@ class CaseTypeTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.name, "Automated")
+        XCTAssertEqual(response.first?.configs.count, 3)
     }
 }
