@@ -4,7 +4,7 @@ import NIOHTTP1
 
 public protocol CaseTypeRoutes {
     /// Returns a list of available case types. See https://www.gurock.com/testrail/docs/api/reference/case-types
-    func getCaseTypes() -> EventLoopFuture<[TestRailCaseType]>
+    func get() -> EventLoopFuture<[TestRailCaseType]>
 }
 
 public struct TestRailCaseTypeRoutes: CaseTypeRoutes {
@@ -17,7 +17,7 @@ public struct TestRailCaseTypeRoutes: CaseTypeRoutes {
         self.apiHandler = apiHandler
     }
     
-    public func getCaseTypes() -> EventLoopFuture<[TestRailCaseType]> {
+    public func get() -> EventLoopFuture<[TestRailCaseType]> {
         return apiHandler.send(method: .GET, path: "get_case_types", headers: headers)
     }
 }

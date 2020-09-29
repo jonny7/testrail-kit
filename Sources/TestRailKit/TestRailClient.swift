@@ -9,6 +9,7 @@ public final class TestRailClient {
     public var cases: CaseRoutes
     public var caseFields: CaseFieldRoutes
     public var caseTypes: CaseTypeRoutes
+    public var configurations: ConfigurationRoutes
 
     /// Initializes the TestRail Client
     /// - Parameters:
@@ -29,6 +30,7 @@ public final class TestRailClient {
         cases = TestRailCaseRoutes(apiHandler: handler)
         caseFields = TestRailCaseFieldRoutes(apiHandler: handler)
         caseTypes = TestRailCaseTypeRoutes(apiHandler: handler)
+        configurations = TestRailConfigurationRoutes(apiHandler: handler)
     }
 
     /// ensures the correct `eventLoop` by hopping threads if needed
