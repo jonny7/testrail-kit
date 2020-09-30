@@ -3,14 +3,10 @@ import NIO
 import NIOHTTP1
 
 public protocol CaseFieldRoutes {
-    /// Returns a list of available test case custom fields
-    /// See https://www.gurock.com/testrail/docs/api/reference/case-fields#get_case_fields
-    func get() -> EventLoopFuture<[TestRailCaseField]>
-
-    /// Adds a new case fields to TestRail
-    /// - Parameter caseField: `AddedTestRailCaseField`
-    /// See https://www.gurock.com/testrail/docs/api/reference/case-fields#add_case_field
-    func add(caseField: TestRailNewCaseField) throws -> EventLoopFuture<AddedTestRailCaseField>
+    
+    /// This generic function provide CRUD functionality for managing case fields in TestRail
+    /// - Parameter config: See `Field`
+    func action<TM: TestRailModel>(field: Field) throws -> EventLoopFuture<TM>
 }
 
 public struct TestRailCaseFieldRoutes: CaseFieldRoutes {
@@ -22,14 +18,11 @@ public struct TestRailCaseFieldRoutes: CaseFieldRoutes {
     init(apiHandler: TestRailAPIHandler) {
         self.apiHandler = apiHandler
     }
-
-    public func get() -> EventLoopFuture<[TestRailCaseField]> {
-        return apiHandler.send(method: .GET, path: "get_case_fields", headers: headers)
-    }
-
-    public func add(caseField: TestRailNewCaseField) throws -> EventLoopFuture<AddedTestRailCaseField> {
-        let body = try caseField.encodeTestRailModel(encoder: apiHandler.encoder)
-        return apiHandler.send(
-            method: .POST, path: "add_case_field", body: .string(body), headers: headers)
+    
+    public func action<TM>(field: Field) throws -> EventLoopFuture<TM> where TM : TestRailModel {
+        guard let caseField = try field.request.caseField?.encodeTestRailModel(encoder: self.apiHandler.encoder) else {
+            return apiHandler.send(method: field.request.method, path: field.request.uri, headers: headers)
+        }
+        return apiHandler.send(method: field.request.method, path: field.request.uri, body: .string(caseField), headers: headers)
     }
 }
