@@ -4,7 +4,8 @@ import NIOHTTP1
 
 public protocol AttachmentRoutes {
  
-    /// Performs CRUD actions on Attachments, see `Attachment` for more details on how
+    /// This generic function provide CRUD functionality for managing attachments in TestRail
+    /// - Parameter config: See `Attachment`
     func action<TM: TestRailModel>(attachment: Attachment) -> EventLoopFuture<TM>
 
     /// Headers to send with the request.

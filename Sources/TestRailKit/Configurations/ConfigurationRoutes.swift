@@ -4,7 +4,7 @@ import NIOHTTP1
 
 public protocol ConfigurationRoutes {
     
-    /// This generic function provide CRUD functionality for managing confugrations and configuration groups in TestRail
+    /// This generic function provide CRUD functionality for managing configurations and configuration groups in TestRail
     /// - Parameter config: See `TestRailConfig`
     func action<TM: TestRailModel>(config: TestRailConfig) throws -> EventLoopFuture<TM>
 }
