@@ -18,7 +18,7 @@ extension ConfigurationUtilities {
     var configurationResponseDecoded: [Configuration] {
         try! self.decoder.decode([Configuration].self, from: configurationResponseString.data(using: .utf8)!)
     }
-    
+
     var addConfigResponseDecoded: Configuration {
         try! self.decoder.decode(Configuration.self, from: addConfigResponseString.data(using: .utf8)!)
     }
