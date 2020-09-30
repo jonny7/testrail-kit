@@ -47,6 +47,6 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
 
     public func attachmentData(attachmentData: AttachmentData) -> EventLoopFuture<TestRailDataResponse> {
         return apiHandler.send(
-            method: attachmentData.request.1, path: attachmentData.request.0, headers: headers)
+            method: attachmentData.request.method, path: attachmentData.request.uri, headers: headers)
     }
 }
