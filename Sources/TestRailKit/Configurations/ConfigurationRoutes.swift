@@ -4,9 +4,9 @@ import NIOHTTP1
 
 public protocol ConfigurationRoutes {
     
-    /// gets the avilable configurations https://www.gurock.com/testrail/docs/api/reference/configurations#get_configs
-    /// - Parameter projectId: Int Project ID
-    func get(projectId: Int) -> EventLoopFuture<[Configuration]>
+    /// This generic function provide CRUD functionality for managing confugrations and configuration groups in TestRail
+    /// - Parameter config: See `TestRailConfig`
+    func action<TM: TestRailModel>(config: TestRailConfig) throws -> EventLoopFuture<TM>
 }
 
 public struct TestRailConfigurationRoutes: ConfigurationRoutes {
@@ -19,7 +19,10 @@ public struct TestRailConfigurationRoutes: ConfigurationRoutes {
         self.apiHandler = apiHandler
     }
     
-    public func get(projectId id: Int) -> EventLoopFuture<[Configuration]> {
-        return apiHandler.send(method: .GET, path: "get_configs/\(id)", headers: headers)
+    public func action<TM>(config: TestRailConfig) throws -> EventLoopFuture<TM> where TM : TestRailModel {
+        guard let body = try config.request.body?.encodeTestRailModel(encoder: self.apiHandler.encoder) else {
+            return apiHandler.send(method: config.request.method, path: config.request.uri, headers: headers)
+        }
+        return apiHandler.send(method: config.request.method, path: config.request.uri, body: .string(body), headers: headers)
     }
 }

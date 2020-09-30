@@ -5,7 +5,7 @@ public enum Case {
     case many(
         projectId: Int, suiteId: Int?, filter: [TestRailFilterOption: TestRailFilterValueBuilder]?)
 
-    var uri: (String, String?) {
+    var request: (uri: String, filter: String?) {
         switch self {
             case .add:
                 return ("add_case/", nil)

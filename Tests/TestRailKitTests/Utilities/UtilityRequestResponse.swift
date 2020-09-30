@@ -204,3 +204,37 @@ let configResponse = """
     }
 ]
 """
+
+let addConfigGroupResponse = """
+{
+    "id":1,
+    "name":"Browsers",
+    "project_id":1,
+    "configs":[]
+}
+"""
+
+let addConfigResponse = """
+{
+    "id":1,
+    "name":"Chrome",
+    "group_id":1
+}
+"""
+
+let updatedConfifGroupResponse = """
+{
+"id":1,
+"name":"OS",
+"project_id":1,
+"configs":[
+    {"id":1,
+    "name":"Chrome",
+    "group_id":1
+    }]
+    }
+"""
+
+let updatedConfigResponse = """
+{"id":1,"name":"Mac OS","group_id":1}
+"""

@@ -39,12 +39,12 @@ public struct TestRailCaseRoutes: CaseRoutes {
     where TM: TestRailModel {
         let body = try testCase.encodeTestRailModel(encoder: apiHandler.encoder)
         return apiHandler.send(
-            method: .POST, path: "\(type.uri.0)\(id)", body: .string(body), headers: headers)
+            method: .POST, path: "\(type.request.uri)\(id)", body: .string(body), headers: headers)
     }
 
     public func getCase<TM>(type: Case) -> EventLoopFuture<TM> where TM: TestRailModel {
-        let filter = type.uri.1 ?? ""
-        return apiHandler.send(method: .GET, path: "\(type.uri.0)", query: filter, headers: headers)
+        let filter = type.request.filter ?? ""
+        return apiHandler.send(method: .GET, path: "\(type.request.uri)", query: filter, headers: headers)
     }
 
     public func deleteCase(caseId: Int) -> EventLoopFuture<TestRailDataResponse> {

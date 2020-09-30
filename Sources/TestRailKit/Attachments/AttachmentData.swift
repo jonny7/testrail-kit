@@ -9,7 +9,7 @@ public enum AttachmentData {
     /// - Parameter attachmentId: The ID of the attachment to to delete
     case delete(attachmentId: Int)
 
-    var request: (String, HTTPMethod) {
+    var request: (uri: String, method: HTTPMethod) {
         switch self {
             case .get(let attachmentId):
                 return ("get_attachment/\(attachmentId)", .GET)
