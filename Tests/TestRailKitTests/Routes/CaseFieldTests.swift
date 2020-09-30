@@ -79,7 +79,9 @@ class CaseFieldTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
+        XCTAssertEqual(
+            body.getBytes(at: body.readerIndex, length: body.readableBytes),
+            requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
 
         XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewCaseField.self, from: body).name, "Brand New Case")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
