@@ -15,8 +15,7 @@ class AttachmentTests: XCTestCase {
 
     func testAddAttachmentToPlan() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        requestComplete = Self.utilities.client.attachments.addAttachment(
-            attachment: .toPlan(planId: 1), file: Self.utilities.file)
+        requestComplete = Self.utilities.client.attachments.action(attachment: .add(.toPlan(planId: 1, file: Self.utilities.file)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -51,8 +50,7 @@ class AttachmentTests: XCTestCase {
 
     func testAddAttachmentToTestPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        requestComplete = Self.utilities.client.attachments.addAttachment(
-            attachment: .toTestPlanEntry(planId: 1, entryId: 2), file: Self.utilities.file)
+        requestComplete = Self.utilities.client.attachments.action(attachment: .add(.toTestPlanEntry(planId: 1, entryId: 2, file: Self.utilities.file)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -87,8 +85,7 @@ class AttachmentTests: XCTestCase {
 
     func testAddAttachmentToResult() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        requestComplete = Self.utilities.client.attachments.addAttachment(
-            attachment: .toResult(resultId: 5), file: Self.utilities.file)
+        requestComplete = Self.utilities.client.attachments.action(attachment: .add(.toResult(resultId: 5, file: Self.utilities.file)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -123,8 +120,7 @@ class AttachmentTests: XCTestCase {
 
     func testAddAttachmentToRun() {
         var requestComplete: EventLoopFuture<TestRailAttachmentIdentifier>!
-        requestComplete = Self.utilities.client.attachments.addAttachment(
-            attachment: .toRun(rundId: 3), file: Self.utilities.file)
+        requestComplete = Self.utilities.client.attachments.action(attachment: .add(.toRun(rundId: 3, file: Self.utilities.file)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -159,7 +155,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentForCase() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forCase(caseId: 31))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .getInfo(.forCase(caseId: 31)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -193,7 +189,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForPlan() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forPlan(planId: 32))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .getInfo(.forPlan(planId: 32)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -227,7 +223,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForPlanEntry() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forPlanEntry(planId: 6, entryId: 29))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .getInfo(.forPlanEntry(planId: 6, entryId: 29)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -261,7 +257,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForRun() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forRun(runId: 65))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .getInfo(.forRun(runId: 65)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -305,7 +301,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachmentsForTest() {
         var requestComplete: EventLoopFuture<[TestRailAttachment]>!
-        requestComplete = Self.utilities.client.attachments.getAttachment(attachment: .forTest(testId: 1003))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .getInfo(.forTest(testId: 1003)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -339,7 +335,7 @@ class AttachmentTests: XCTestCase {
 
     func testGetAttachment() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        requestComplete = Self.utilities.client.attachments.attachmentData(attachmentData: .get(attachmentId: 622))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .file(attachmentId: 622, action: .get))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -378,7 +374,7 @@ class AttachmentTests: XCTestCase {
 
     func testDeleteAttachment() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        requestComplete = Self.utilities.client.attachments.attachmentData(attachmentData: .delete(attachmentId: 622))
+        requestComplete = Self.utilities.client.attachments.action(attachment: .file(attachmentId: 622, action: .delete))
 
         XCTAssertNoThrow(
             XCTAssertEqual(

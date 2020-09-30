@@ -1,4 +1,4 @@
-public enum ActionType {
-    case add
-    case update
-}
+//public enum ActionType {
+//    case add
+//    case update
+//}
