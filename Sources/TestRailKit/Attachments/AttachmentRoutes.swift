@@ -3,18 +3,9 @@ import NIO
 import NIOHTTP1
 
 public protocol AttachmentRoutes {
-
-    /// This method allows you to add an attachment to TestRail objects via mutliple different end points.
-    /// for specifics on these particular methods please see `AddAttachment`
-    func addAttachment(attachment: Attachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier>
-
-    /// This method allows you to get attachments from various TestRail objects via multiple different endpoints
-    /// for specifics on these particular methods please see `GetAttachments`
-    func getAttachment(attachment: Attachment) -> EventLoopFuture<[TestRailAttachment]>
-
-    /// This method allows you to perform data actions, namely retrieve a testrail attachment or delete one
-    /// for specifics on these particular methods please see `AttachmentData`
-    func attachmentData(attachmentData: AttachmentData) -> EventLoopFuture<TestRailDataResponse>
+ 
+    /// Performs CRUD actions on Attachments, see `Attachment` for more details on how
+    func action<TM: TestRailModel>(attachment: Attachment) -> EventLoopFuture<TM>
 
     /// Headers to send with the request.
     var headers: HTTPHeaders { get set }
@@ -35,18 +26,11 @@ public struct TestRailAttachmentRoutes: AttachmentRoutes {
         multipart.replaceOrAdd(name: "content-type", value: "multipart/form-data")
         return multipart
     }
-
-    public func addAttachment(attachment: Attachment, file: Data) -> EventLoopFuture<TestRailAttachmentIdentifier> {
-        return apiHandler.send(
-            method: .POST, path: attachment.uri, body: .data(file), headers: multipart)
-    }
-
-    public func getAttachment(attachment: Attachment) -> EventLoopFuture<[TestRailAttachment]> {
-        return apiHandler.send(method: .GET, path: attachment.uri, headers: headers)
-    }
-
-    public func attachmentData(attachmentData: AttachmentData) -> EventLoopFuture<TestRailDataResponse> {
-        return apiHandler.send(
-            method: attachmentData.request.method, path: attachmentData.request.uri, headers: headers)
+    
+    public func action<TM>(attachment: Attachment) -> EventLoopFuture<TM> where TM : TestRailModel {
+        guard let file = attachment.request.file else {
+            return apiHandler.send(method: attachment.request.method, path: attachment.request.uri, headers: headers)
+        }
+        return apiHandler.send(method: attachment.request.method, path: attachment.request.uri, body: .data(file), headers: multipart)
     }
 }
