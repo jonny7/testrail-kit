@@ -46,11 +46,13 @@ class ConfigurationTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.first?.configs.count, 3)
     }
-    
+
     func testAddConfigGroup() {
         var requestComplete: EventLoopFuture<ConfigurationGroup>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .set(.group(projectId: 1, group: Self.utilities.addConfigGroup, action: .add))))
-        
+        XCTAssertNoThrow(
+            requestComplete = try Self.utilities.client.configurations.action(
+                config: .set(.group(projectId: 1, group: Self.utilities.addConfigGroup, action: .add))))
+
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addConfigGroup.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -69,7 +71,7 @@ class ConfigurationTests: XCTestCase {
                             ("Content-Length", "\(contentLength)"),
                         ]))),
                 try Self.utilities.testServer.readInbound()))
-        
+
         var inboundBody: HTTPServerRequestPart?
         XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
         guard case .body(let body) = try! XCTUnwrap(inboundBody) else {
@@ -77,7 +79,9 @@ class ConfigurationTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
+        XCTAssertEqual(
+            body.getBytes(at: body.readerIndex, length: body.readableBytes),
+            requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
         XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "Browsers")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
@@ -93,11 +97,13 @@ class ConfigurationTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.name, "Browsers")
     }
-    
+
     func testUpdateConfigGroup() {
         var requestComplete: EventLoopFuture<ConfigurationGroup>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .set(.group(projectId: 1, group: Self.utilities.updateConfigGroup, action: .update))))
-        
+        XCTAssertNoThrow(
+            requestComplete = try Self.utilities.client.configurations.action(
+                config: .set(.group(projectId: 1, group: Self.utilities.updateConfigGroup, action: .update))))
+
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updateConfigGroup.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -116,7 +122,7 @@ class ConfigurationTests: XCTestCase {
                             ("Content-Length", "\(contentLength)"),
                         ]))),
                 try Self.utilities.testServer.readInbound()))
-        
+
         var inboundBody: HTTPServerRequestPart?
         XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
         guard case .body(let body) = try! XCTUnwrap(inboundBody) else {
@@ -124,7 +130,9 @@ class ConfigurationTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
+        XCTAssertEqual(
+            body.getBytes(at: body.readerIndex, length: body.readableBytes),
+            requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
         XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "OS")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
@@ -140,11 +148,13 @@ class ConfigurationTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.name, "OS")
     }
-    
+
     func testAddConfig() {
         var requestComplete: EventLoopFuture<Configuration>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .set(.config(groupId: 1, config: Self.utilities.addConfig, action: .add))))
-        
+        XCTAssertNoThrow(
+            requestComplete = try Self.utilities.client.configurations.action(
+                config: .set(.config(groupId: 1, config: Self.utilities.addConfig, action: .add))))
+
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addConfig.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -163,7 +173,7 @@ class ConfigurationTests: XCTestCase {
                             ("Content-Length", "\(contentLength)"),
                         ]))),
                 try Self.utilities.testServer.readInbound()))
-        
+
         var inboundBody: HTTPServerRequestPart?
         XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
         guard case .body(let body) = try! XCTUnwrap(inboundBody) else {
@@ -171,7 +181,9 @@ class ConfigurationTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
+        XCTAssertEqual(
+            body.getBytes(at: body.readerIndex, length: body.readableBytes),
+            requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
         XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "Chrome")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
@@ -187,11 +199,13 @@ class ConfigurationTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.name, "Chrome")
     }
-    
+
     func testUpdateConfig() {
         var requestComplete: EventLoopFuture<Configuration>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .set(.config(groupId: 1, config: Self.utilities.updateConfig, action: .update))))
-        
+        XCTAssertNoThrow(
+            requestComplete = try Self.utilities.client.configurations.action(
+                config: .set(.config(groupId: 1, config: Self.utilities.updateConfig, action: .update))))
+
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updateConfig.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -210,7 +224,7 @@ class ConfigurationTests: XCTestCase {
                             ("Content-Length", "\(contentLength)"),
                         ]))),
                 try Self.utilities.testServer.readInbound()))
-        
+
         var inboundBody: HTTPServerRequestPart?
         XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
         guard case .body(let body) = try! XCTUnwrap(inboundBody) else {
@@ -218,7 +232,9 @@ class ConfigurationTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(body.getBytes(at: body.readerIndex, length: body.readableBytes), requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
+        XCTAssertEqual(
+            body.getBytes(at: body.readerIndex, length: body.readableBytes),
+            requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
         XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "Mac OS")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
@@ -234,10 +250,11 @@ class ConfigurationTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.name, "Mac OS")
     }
-    
+
     func testDeleteConfig() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .delete(.config(configId: 1))))
+        XCTAssertNoThrow(
+            requestComplete = try Self.utilities.client.configurations.action(config: .delete(.config(configId: 1))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -268,10 +285,11 @@ class ConfigurationTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data, responseBody)
     }
-    
+
     func testDeleteConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .delete(.group(groupId: 1))))
+        XCTAssertNoThrow(
+            requestComplete = try Self.utilities.client.configurations.action(config: .delete(.group(groupId: 1))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(

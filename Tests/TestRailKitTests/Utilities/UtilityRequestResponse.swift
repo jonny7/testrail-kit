@@ -136,105 +136,105 @@ let addedCaseFieldResponse =
 
 // Mark: CaseType
 let caseTypeResponses = """
-[
-{
-        "id": 1,
-        "is_default": false,
-        "name": "Automated"
-    },
+    [
     {
-        "id": 2,
-        "is_default": false,
-        "name": "Functionality"
-    },
-    {
-        "id": 6,
-        "is_default": true,
-        "name": "Other"
-    }
-]
-"""
+            "id": 1,
+            "is_default": false,
+            "name": "Automated"
+        },
+        {
+            "id": 2,
+            "is_default": false,
+            "name": "Functionality"
+        },
+        {
+            "id": 6,
+            "is_default": true,
+            "name": "Other"
+        }
+    ]
+    """
 
 // Mark: Configurations
 let configResponse = """
-[
-    {
-        "configs": [
-            {
-                "group_id": 1,
-                "id": 1,
-                "name": "Chrome"
-            },
-            {
-                "group_id": 1,
-                "id": 2,
-                "name": "Firefox"
-            },
-            {
-                "group_id": 1,
-                "id": 3,
-                "name": "Internet Explorer"
-            }
-        ],
-        "id": 1,
-        "name": "Browsers",
-        "project_id": 1
-    },
-    {
-        "configs": [
-            {
-                "group_id": 2,
-                "id": 6,
-                "name": "Ubuntu 12"
-            },
-            {
-                "group_id": 2,
-                "id": 4,
-                "name": "Windows 7"
-            },
-            {
-                "group_id": 2,
-                "id": 5,
-                "name": "Windows 8"
-            }
-        ],
-        "id": 2,
-        "name": "Operating Systems",
-        "project_id": 1
-    }
-]
-"""
+    [
+        {
+            "configs": [
+                {
+                    "group_id": 1,
+                    "id": 1,
+                    "name": "Chrome"
+                },
+                {
+                    "group_id": 1,
+                    "id": 2,
+                    "name": "Firefox"
+                },
+                {
+                    "group_id": 1,
+                    "id": 3,
+                    "name": "Internet Explorer"
+                }
+            ],
+            "id": 1,
+            "name": "Browsers",
+            "project_id": 1
+        },
+        {
+            "configs": [
+                {
+                    "group_id": 2,
+                    "id": 6,
+                    "name": "Ubuntu 12"
+                },
+                {
+                    "group_id": 2,
+                    "id": 4,
+                    "name": "Windows 7"
+                },
+                {
+                    "group_id": 2,
+                    "id": 5,
+                    "name": "Windows 8"
+                }
+            ],
+            "id": 2,
+            "name": "Operating Systems",
+            "project_id": 1
+        }
+    ]
+    """
 
 let addConfigGroupResponse = """
-{
-    "id":1,
-    "name":"Browsers",
-    "project_id":1,
-    "configs":[]
-}
-"""
+    {
+        "id":1,
+        "name":"Browsers",
+        "project_id":1,
+        "configs":[]
+    }
+    """
 
 let addConfigResponse = """
-{
-    "id":1,
-    "name":"Chrome",
-    "group_id":1
-}
-"""
+    {
+        "id":1,
+        "name":"Chrome",
+        "group_id":1
+    }
+    """
 
 let updatedConfifGroupResponse = """
-{
-"id":1,
-"name":"OS",
-"project_id":1,
-"configs":[
-    {"id":1,
-    "name":"Chrome",
-    "group_id":1
-    }]
-    }
-"""
+    {
+    "id":1,
+    "name":"OS",
+    "project_id":1,
+    "configs":[
+        {"id":1,
+        "name":"Chrome",
+        "group_id":1
+        }]
+        }
+    """
 
 let updatedConfigResponse = """
-{"id":1,"name":"Mac OS","group_id":1}
-"""
+    {"id":1,"name":"Mac OS","group_id":1}
+    """
