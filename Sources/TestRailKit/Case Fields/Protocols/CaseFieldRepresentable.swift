@@ -1,4 +1,4 @@
-protocol CaseField {
+protocol CaseFieldRepresentable {
     var id: Int? { get }
     var isActive: Bool { get }
     var typeId: Int { get }

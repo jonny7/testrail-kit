@@ -1,25 +1,33 @@
-public enum Case {
-    case add
-    case update
+import NIOHTTP1
+
+public enum Case: ConfigurationRepresentable {
+    
+    case add(case: TestRailCase, sectionId: Int)
+    case update(case: UpdatedTestRailCase, id: Int)
     case single(caseId: Int)
     case many(
-        projectId: Int, suiteId: Int?, filter: [TestRailFilterOption: TestRailFilterValueBuilder]?)
+        projectId: Int, suiteId: Int?, filter: [TestRailFilterOption: TestRailFilterValueBuilder]?
+        )
+    case delete(caseId: Int)
 
-    var request: (uri: String, filter: String?) {
+    public var request: RequestDetails {
         switch self {
-            case .add:
-                return ("add_case/", nil)
-            case .update:
-                return ("update_case/", nil)
+            case .add(let `case`, let sectionId):
+                return (uri: "add_case/\(sectionId)", method: .POST, body: `case`)
+            case .update(let updated, let caseId):
+                return (uri: "update_case/\(caseId)", method: .POST, body: updated)
             case .single(let caseId):
-                return ("get_case/\(caseId)", nil)
+                return ("get_case/\(caseId)", .GET, nil)
             case .many(let projectId, let suiteId, let filter):
                 var suite = ""
 
                 if let suiteId = suiteId {
                     suite = "&suite_id=\(suiteId)"
                 }
-                return ("get_cases/\(projectId)\(suite)", filter?.queryParameters)
+                let uri = "get_cases/\(projectId)\(suite)\(filter?.queryParameters ?? "")"
+                return (uri: uri, method: .GET , nil)
+            case .delete(let caseId):
+                return (uri: "delete_case/\(caseId)", method: .POST, nil)
         }
     }
 }

@@ -16,7 +16,7 @@ class CaseFieldTests: XCTestCase {
 
     func testGetCaseFields() {
         var requestComplete: EventLoopFuture<[TestRailCaseField]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.caseFields.action(field: .get))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: CaseField.get))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -50,7 +50,7 @@ class CaseFieldTests: XCTestCase {
     func testAddCaseField() {
         var requestComplete: EventLoopFuture<AddedTestRailCaseField>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.caseFields.action(field: .add(caseField: Self.utilities.newCaseFieldRequestObject)))
+            requestComplete = try! Self.utilities.client.action(configurable: CaseField.add(caseField: Self.utilities.newCaseFieldRequestObject)))
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.newCaseFieldRequestObject, encoder: Self.utilities.encoder)

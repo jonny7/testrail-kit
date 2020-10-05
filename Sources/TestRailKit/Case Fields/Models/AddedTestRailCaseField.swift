@@ -1,4 +1,4 @@
-public struct AddedTestRailCaseField: CaseField, AddedCaseField {
+public struct AddedTestRailCaseField: CaseFieldRepresentable, AddedCaseFieldRepresentable {
     public var entityId: Int
     public var locationId: Int
     public var isMulti: Int

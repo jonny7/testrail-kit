@@ -1,10 +1,10 @@
 import NIOHTTP1
 
-public enum Field {
+public enum CaseField: ConfigurationRepresentable {
     case get
     case add(caseField: TestRailNewCaseField)
     
-    var request: (uri: String, method: HTTPMethod, caseField: TestRailNewCaseField?) {
+    public var request: RequestDetails {
         switch self {
         case .get:
             return ("get_case_fields", .GET, nil)

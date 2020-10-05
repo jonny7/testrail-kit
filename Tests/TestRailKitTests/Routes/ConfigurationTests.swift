@@ -15,8 +15,8 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testGetConfigs() {
-        var requestComplete: EventLoopFuture<[ConfigurationGroup]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.configurations.action(config: .get(projectId: 1)))
+        var requestComplete: EventLoopFuture<[TestRailConfigurationGroup]>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Configuration.get(projectId: 1)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -48,10 +48,10 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testAddConfigGroup() {
-        var requestComplete: EventLoopFuture<ConfigurationGroup>!
+        var requestComplete: EventLoopFuture<TestRailConfigurationGroup>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.configurations.action(
-                config: .set(.group(projectId: 1, group: Self.utilities.addConfigGroup, action: .add))))
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.group(projectId: 1, group: Self.utilities.addConfigGroup, action: .add)))
+        )
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addConfigGroup.self, encoder: Self.utilities.encoder)
@@ -82,7 +82,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(
             body.getBytes(at: body.readerIndex, length: body.readableBytes),
             requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
-        XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "Browsers")
+        XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewConfiguration.self, from: body).name, "Browsers")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
@@ -99,11 +99,10 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testUpdateConfigGroup() {
-        var requestComplete: EventLoopFuture<ConfigurationGroup>!
+        var requestComplete: EventLoopFuture<TestRailConfigurationGroup>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.configurations.action(
-                config: .set(.group(projectId: 1, group: Self.utilities.updateConfigGroup, action: .update))))
-
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.group(projectId: 1, group: Self.utilities.updateConfigGroup, action: .update))))
+        
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updateConfigGroup.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -133,7 +132,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(
             body.getBytes(at: body.readerIndex, length: body.readableBytes),
             requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
-        XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "OS")
+        XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewConfiguration.self, from: body).name, "OS")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
@@ -150,11 +149,11 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testAddConfig() {
-        var requestComplete: EventLoopFuture<Configuration>!
+        var requestComplete: EventLoopFuture<TestRailConfiguration>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.configurations.action(
-                config: .set(.config(groupId: 1, config: Self.utilities.addConfig, action: .add))))
-
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.config(groupId: 1, config: Self.utilities.addConfig, action: .add)))
+        )
+        
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addConfig.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -184,7 +183,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(
             body.getBytes(at: body.readerIndex, length: body.readableBytes),
             requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
-        XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "Chrome")
+        XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewConfiguration.self, from: body).name, "Chrome")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
@@ -201,11 +200,11 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testUpdateConfig() {
-        var requestComplete: EventLoopFuture<Configuration>!
+        var requestComplete: EventLoopFuture<TestRailConfiguration>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.configurations.action(
-                config: .set(.config(groupId: 1, config: Self.utilities.updateConfig, action: .update))))
-
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.config(groupId: 1, config: Self.utilities.updateConfig, action: .update)))
+        )
+                
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updateConfig.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -235,7 +234,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(
             body.getBytes(at: body.readerIndex, length: body.readableBytes),
             requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
-        XCTAssertEqual(try! Self.utilities.decoder.decode(NewConfig.self, from: body).name, "Mac OS")
+        XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewConfiguration.self, from: body).name, "Mac OS")
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
@@ -254,7 +253,8 @@ class ConfigurationTests: XCTestCase {
     func testDeleteConfig() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.configurations.action(config: .delete(.config(configId: 1))))
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.delete(.config(configId: 1)))
+        )
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -289,7 +289,8 @@ class ConfigurationTests: XCTestCase {
     func testDeleteConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.configurations.action(config: .delete(.group(groupId: 1))))
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.delete(.group(groupId: 1)))
+        )
 
         XCTAssertNoThrow(
             XCTAssertEqual(
