@@ -2,7 +2,7 @@ import Foundation
 
 @testable import TestRailKit
 
-struct CustomTestRailCase: TestCase, TestRailModel {
+struct CustomTestRailCase: TestCaseRepresentable, TestRailModel {
     var id: Int?
     var title: String
     var sectionId: Int

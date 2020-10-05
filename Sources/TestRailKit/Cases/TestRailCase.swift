@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TestRailCase: TestCase {
+public struct TestRailCase: TestCaseRepresentable {
     public var id: Int?
     public var title: String
     public var sectionId: Int

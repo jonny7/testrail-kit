@@ -16,7 +16,7 @@ class CaseTests: XCTestCase {
 
     func testGetCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
-        requestComplete = Self.utilities.client.cases.getCase(type: .single(caseId: 100))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.single(caseId: 100)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -49,13 +49,10 @@ class CaseTests: XCTestCase {
 
     func testGetCases() {
         var requestComplete: EventLoopFuture<[TestRailCase]>!
-        requestComplete = Self.utilities.client.cases.getCase(
-            type: .many(
-                projectId: 3, suiteId: 5,
-                filter: [
-                    .template_id: .integer(10),
-                    .type_id: .integer(5),
-                ]))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.many(projectId: 3, suiteId: 5, filter: [
+            .template_id: .integer(10),
+            .type_id: .integer(5),
+        ])))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -89,9 +86,8 @@ class CaseTests: XCTestCase {
     func testAddCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.cases.addCase(
-                type: .add, id: 275, testCase: Self.utilities.caseRequestObject))
-
+            requestComplete = try! Self.utilities.client.action(configurable: Case.add(case: Self.utilities.caseRequestObject, sectionId: 275)))
+        
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.caseRequestObject.self, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
@@ -139,8 +135,7 @@ class CaseTests: XCTestCase {
     func testUpdateCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.cases.addCase(
-                type: .update, id: 88, testCase: Self.utilities.updatedCase))
+            requestComplete = try! Self.utilities.client.action(configurable: Case.update(case: Self.utilities.updatedCase, id: 88)))
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 250)
         requestBuffer.writeData(Self.utilities.updatedCaseEncoded)
@@ -188,7 +183,8 @@ class CaseTests: XCTestCase {
 
     func testDeleteTest() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        requestComplete = Self.utilities.client.cases.deleteCase(caseId: 88)
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.delete(caseId: 88)))
+            //.deleteCase(caseId: 88)
 
         XCTAssertNoThrow(
             XCTAssertEqual(

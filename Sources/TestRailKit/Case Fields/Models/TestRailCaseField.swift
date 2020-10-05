@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TestRailCaseField: CaseField {
+public struct TestRailCaseField: CaseFieldRepresentable {
     public var id: Int?
     public var isActive: Bool
     public var typeId: Int

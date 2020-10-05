@@ -1,15 +1,13 @@
 import AsyncHTTPClient
 import Foundation
 import NIO
+import NIOHTTP1
 
 public final class TestRailClient {
 
     var handler: TestRailAPIHandler
     public var attachments: AttachmentRoutes
-    public var cases: CaseRoutes
-    public var caseFields: CaseFieldRoutes
-    public var caseTypes: CaseTypeRoutes
-    public var configurations: ConfigurationRoutes
+    public var headers: HTTPHeaders = [:]
 
     /// Initializes the TestRail Client
     /// - Parameters:
@@ -27,15 +25,20 @@ public final class TestRailClient {
             httpClient: httpClient, eventLoop: eventLoop, username: username, apiKey: apiKey,
             testRailBaseURL: testRailUrl, port: port)
         attachments = TestRailAttachmentRoutes(apiHandler: handler)
-        cases = TestRailCaseRoutes(apiHandler: handler)
-        caseFields = TestRailCaseFieldRoutes(apiHandler: handler)
-        caseTypes = TestRailCaseTypeRoutes(apiHandler: handler)
-        configurations = TestRailConfigurationRoutes(apiHandler: handler)
     }
 
     /// ensures the correct `eventLoop` by hopping threads if needed
     public func hopped(to eventLoop: EventLoop) -> TestRailClient {
         handler.eventLoop = eventLoop
         return self
+    }
+}
+
+extension TestRailClient: Routeable {
+    public func action<TM, C>(configurable: C) throws -> EventLoopFuture<TM> where TM : TestRailModel, C : ConfigurationRepresentable {
+        guard let body = try configurable.request.body?.encodeTestRailModel(encoder: self.handler.encoder) else {
+            return handler.send(method: configurable.request.method, path: configurable.request.uri, headers: headers)
+        }
+        return handler.send(method: configurable.request.method, path: configurable.request.uri, body: .string(body), headers: headers)
     }
 }
