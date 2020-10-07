@@ -36,7 +36,7 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
         XCTAssertNoThrow(
@@ -71,7 +71,7 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
         XCTAssertNoThrow(
@@ -106,7 +106,7 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
         XCTAssertNoThrow(
@@ -141,7 +141,7 @@ class AttachmentTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.body(requestBuffer), try Self.utilities.testServer.readInbound()))
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 50)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentIdentifierResponse)
 
         XCTAssertNoThrow(
@@ -174,7 +174,7 @@ class AttachmentTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
         XCTAssertNoThrow(
@@ -208,7 +208,7 @@ class AttachmentTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
         XCTAssertNoThrow(
@@ -242,7 +242,7 @@ class AttachmentTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
         XCTAssertNoThrow(
@@ -276,7 +276,7 @@ class AttachmentTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
         XCTAssertNoThrow(
@@ -320,7 +320,7 @@ class AttachmentTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.attachmentsForCaseResponse)
 
         XCTAssertNoThrow(

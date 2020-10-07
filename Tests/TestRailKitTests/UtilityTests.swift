@@ -18,11 +18,4 @@ class UtilityTests: XCTestCase {
         let data = try! JSONEncoder().encode(bjson)
         XCTAssertEqual( String(data: data, encoding: .utf8)!, #"{"a":1}"#)
     }
-    
-    func testUpdateCaseDecode() {
-        let updatedCase = UpdatedCase(propertyId: 5)
-        let data = try! JSONEncoder().encode(updatedCase)
-        let json = String(data: data, encoding: .utf8)!
-        XCTAssertEqual(json, #"{"property_id":5}"#)
-    }
 }

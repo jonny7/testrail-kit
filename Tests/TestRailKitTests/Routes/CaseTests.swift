@@ -16,7 +16,7 @@ class CaseTests: XCTestCase {
 
     func testGetCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.single(caseId: 100)))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.get(type: .one(caseId: 100))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -49,11 +49,12 @@ class CaseTests: XCTestCase {
 
     func testGetCases() {
         var requestComplete: EventLoopFuture<[TestRailCase]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.many(projectId: 3, suiteId: 5, filter: [
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.get(type: .all(projectId: 3, suiteId: 5, filter: [
             .template_id: .integer(10),
-            .type_id: .integer(5),
+            .type_id: .integer(5)
         ])))
-
+        )
+        
         XCTAssertNoThrow(
             XCTAssertEqual(
                 .head(
@@ -86,7 +87,8 @@ class CaseTests: XCTestCase {
     func testAddCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.action(configurable: Case.add(case: Self.utilities.caseRequestObject, sectionId: 275)))
+            requestComplete = try! Self.utilities.client.action(configurable: Case.add(sectionId: 275, case: Self.utilities.caseRequestObject))
+        )
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.caseRequestObject.self, encoder: Self.utilities.encoder)
@@ -135,7 +137,8 @@ class CaseTests: XCTestCase {
     func testUpdateCase() {
         var requestComplete: EventLoopFuture<TestRailCase>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.action(configurable: Case.update(case: Self.utilities.updatedCase, id: 88)))
+            requestComplete = try! Self.utilities.client.action(configurable: Case.update(type: .one(caseId: 88), update: Self.utilities.updatedCase))
+        )
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 250)
         requestBuffer.writeData(Self.utilities.updatedCaseEncoded)
@@ -181,10 +184,9 @@ class CaseTests: XCTestCase {
         XCTAssertEqual(response.id!, Self.utilities.caseResponseDecoded.id!)
     }
 
-    func testDeleteTest() {
+    func testDeleteCase() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.delete(caseId: 88)))
-            //.deleteCase(caseId: 88)
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.delete(type: .one(caseId: 88, soft: true))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -192,7 +194,7 @@ class CaseTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .POST,
-                        uri: "/index.php?/api/v2/delete_case/88",
+                        uri: "/index.php?/api/v2/delete_case/88&soft=1",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
@@ -214,5 +216,122 @@ class CaseTests: XCTestCase {
 
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.data, responseBody)
+    }
+    
+    func testDeleteAllTest() {
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.delete(type: .all(projectId: 9, soft: true, suiteId: nil)))
+        )
+        #warning("To add req/resp")
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .POST,
+                        uri: "/index.php?/api/v2/delete_cases/9&soft=1",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        let responseBody = "{}".data(using: .utf8)!
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeData(responseBody)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data, responseBody)
+    }
+    
+    func testGetCaseHistory() {
+        var requestComplete: EventLoopFuture<TestRailCase>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.get(type: .one(caseId: 99, history: true))))
+        #warning("To add req/resp")
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .GET,
+                        uri: "/index.php?/api/v2/get_history_for_case/99",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        responseBuffer.writeString(Self.utilities.caseResponseString)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.title, Self.utilities.caseResponseDecoded.title)
+    }
+    
+    func testUpdateAllCases() {
+        var requestComplete: EventLoopFuture<TestRailCase>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Case.update(type: .all(projectId: 5, suiteId: 2), update: Self.utilities.updatedCase))
+        )
+        #warning("To add req/resp")
+        var requestBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        requestBuffer.writeData(Self.utilities.updatedCaseEncoded)
+        let contentLength = requestBuffer.readableBytes
+
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .POST,
+                        uri: "/index.php?/api/v2/update_cases/5&suite_id=2",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "\(contentLength)"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        var inboundBody: HTTPServerRequestPart?
+        XCTAssertNoThrow(inboundBody = try Self.utilities.testServer.readInbound())
+        guard case .body(let body) = try! XCTUnwrap(inboundBody) else {
+            XCTFail("Expected to get a body")
+            return
+        }
+
+        XCTAssertEqual(
+            body.getBytes(at: body.readerIndex, length: body.readableBytes),
+            requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
+        XCTAssertEqual(body.getString(at: body.readerIndex, length: body.readableBytes)!, #"{"property_id":5}"#)
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        responseBuffer.writeString(Self.utilities.caseResponseString)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.id!, Self.utilities.caseResponseDecoded.id!)
     }
 }
