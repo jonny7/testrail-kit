@@ -238,3 +238,77 @@ let updatedConfifGroupResponse = """
 let updatedConfigResponse = """
     {"id":1,"name":"Mac OS","group_id":1}
     """
+
+// Mark: Milestones
+
+let addedMilestoneResponse = """
+{
+    "id": 4,
+    "name": "Release 2.0",
+    "description": null,
+    "start_on": null,
+    "started_on": 1602068972,
+    "is_started": true,
+    "due_on": 1394596385,
+    "is_completed": false,
+    "completed_on": null,
+    "project_id": 3,
+    "parent_id": null,
+    "refs": null,
+    "url": "https://me.testrail.io/index.php?/milestones/view/4",
+    "milestones": []
+}
+"""
+
+let embeddedMilestoneResponse = """
+{
+    "id": 4,
+    "name": "Release 2.0",
+    "description": null,
+    "start_on": null,
+    "started_on": 1602068972,
+    "is_started": true,
+    "due_on": 1394596385,
+    "is_completed": false,
+    "completed_on": null,
+    "project_id": 3,
+    "parent_id": null,
+    "refs": null,
+    "url": "https://me.testrail.io/index.php?/milestones/view/4",
+    "milestones": [
+{
+    "id": 15,
+    "name": "Sub Milestone",
+    "description": null,
+    "start_on": null,
+    "started_on": 1602068972,
+    "is_started": true,
+    "due_on": 1394596385,
+    "is_completed": false,
+    "completed_on": null,
+    "project_id": 3,
+    "parent_id": null,
+    "refs": null,
+    "url": "https://me.testrail.io/index.php?/milestones/view/4",
+}]
+}
+"""
+
+let updatedMilestoneResponse = """
+{
+    "id": 4,
+    "name": "Release 2.0",
+    "description": null,
+    "start_on": null,
+    "started_on": 1602068972,
+    "is_started": true,
+    "due_on": 1394596385,
+    "is_completed": true,
+    "completed_on": null,
+    "project_id": 3,
+    "parent_id": null,
+    "refs": null,
+    "url": "https://me.testrail.io/index.php?/milestones/view/4",
+    "milestones": []
+}
+"""
