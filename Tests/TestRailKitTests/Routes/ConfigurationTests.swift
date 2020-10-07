@@ -50,7 +50,7 @@ class ConfigurationTests: XCTestCase {
     func testAddConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailConfigurationGroup>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.group(projectId: 1, group: Self.utilities.addConfigGroup, action: .add)))
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.add(type: .group(projectId: 1, group: Self.utilities.addConfigGroup)))
         )
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
@@ -101,7 +101,8 @@ class ConfigurationTests: XCTestCase {
     func testUpdateConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailConfigurationGroup>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.group(projectId: 1, group: Self.utilities.updateConfigGroup, action: .update))))
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.update(type: .group(projectId: 1, group: Self.utilities.updateConfigGroup)))
+        )
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updateConfigGroup.self, encoder: Self.utilities.encoder)
@@ -151,8 +152,8 @@ class ConfigurationTests: XCTestCase {
     func testAddConfig() {
         var requestComplete: EventLoopFuture<TestRailConfiguration>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.config(groupId: 1, config: Self.utilities.addConfig, action: .add)))
-        )
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.add(type: .config(groupId: 1, config: Self.utilities.addConfig)))
+            )
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addConfig.self, encoder: Self.utilities.encoder)
@@ -202,7 +203,7 @@ class ConfigurationTests: XCTestCase {
     func testUpdateConfig() {
         var requestComplete: EventLoopFuture<TestRailConfiguration>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.set(.config(groupId: 1, config: Self.utilities.updateConfig, action: .update)))
+            requestComplete = try Self.utilities.client.action(configurable: Configuration.update(type: .config(groupId: 1, config: Self.utilities.updateConfig)))
         )
                 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
