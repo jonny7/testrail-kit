@@ -7,7 +7,7 @@ class MilestoneUtilities: TestingUtilities {
     let addedMilestoneResponseString = addedMilestoneResponse
     let embeddedMilestoneResponseString = embeddedMilestoneResponse
     let allMilestonesResponseString = "[\(addedMilestoneResponse),\(embeddedMilestoneResponse)]"
-    let updatedMilestone = UpdatedMilestone()
+    let updatedMilestone = UpdatedMilestone(isCompleted: true)
     let updatedMilestoneResponseString = updatedMilestoneResponse
 }
 
@@ -27,5 +27,5 @@ struct MyMilestone: TestRailModel {
 }
 
 struct UpdatedMilestone: TestRailModel {
-    let isCompleted: Bool = true
+    let isCompleted: Bool
 }
