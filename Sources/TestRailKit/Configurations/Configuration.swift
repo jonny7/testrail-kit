@@ -7,11 +7,11 @@ public enum Configuration: ConfigurationRepresentable {
     
     /// Adds a `config` or `config group`
     /// See `AddConfigOption`
-    case add(type: AddConfigOption)
+    case add(type: ConfigOption)
     
     /// Updates a `config` or `config group`
     /// See `UpdateConfigOption`
-    case update(type: UpdateConfigOption)
+    case update(type: ConfigOption)
     
     /// Deletes a config group or config
     /// See `DeleteOption`
@@ -22,9 +22,9 @@ public enum Configuration: ConfigurationRepresentable {
             case .get(let projectId):
                 return (uri: "get_configs/\(projectId)", method: .GET, body: nil)
             case .add(let add):
-                return (uri: add.request.uri, method: .POST, body: add.request.body)
+                return (uri: "add\(add.request.uri)", method: .POST, body: add.request.body)
             case .update(let update):
-                return (uri: update.request.uri, method: .POST, body: update.request.body)
+                return (uri: "update\(update.request.uri)", method: .POST, body: update.request.body)
             case .delete(let option):
                 return (uri: option.request, method: .POST, body: nil)
         }
@@ -51,7 +51,7 @@ public enum Configuration: ConfigurationRepresentable {
         }
     }
     
-    public enum AddConfigOption {
+    public enum ConfigOption {
         /// Adds or modifies a configuration group to a TestRail Project
         /// See - https://www.gurock.com/testrail/docs/api/reference/configurations#add_config_group
         /// - Parameters:
@@ -69,34 +69,9 @@ public enum Configuration: ConfigurationRepresentable {
         var request: (uri: String, body: TestRailModel) {
             switch self {
             case .group(let projectId, let group):
-                return ("add_config_group/\(projectId)", group)
+                return ("_config_group/\(projectId)", group)
             case .config(let groupId, let config):
-                return ("add_config/\(groupId)", config)
-            }
-        }
-    }
-    
-    public enum UpdateConfigOption {
-        /// Modifies a configuration group to a TestRail Project
-        /// See - https://www.gurock.com/testrail/docs/api/reference/configurations#update_config_group
-        /// - Parameters:
-        ///   - projectId: Project ID
-        ///   - newGroup: Name of new group
-        case group(projectId: Int, group: TestRailNewConfiguration)
-        
-        /// Modifies a new config to a group, eg "Chrome" to the config group of "Browsers"
-        /// See - https://www.gurock.com/testrail/docs/api/reference/configurations#update_config
-        /// - Parameters:
-        ///   - groupId: Group ID for config
-        ///   - config: The new configuration name
-        case config(groupId: Int, config: TestRailNewConfiguration)
-
-        var request: (uri: String, body: TestRailModel) {
-            switch self {
-            case .group(let projectId, let group):
-                return ("update_config_group/\(projectId)", group)
-            case .config(let groupId, let config):
-                return ("update_config/\(groupId)", config)
+                return ("_config/\(groupId)", config)
             }
         }
     }
