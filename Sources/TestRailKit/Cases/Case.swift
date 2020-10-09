@@ -50,7 +50,6 @@ public enum Case: ConfigurationRepresentable {
                 let suite = self.getSuite(suiteId: suiteId)
                 let uri = "get_cases/\(projectId)\(suite)\(filter?.queryParameters ?? "")"
                 return (uri: uri, method: .GET)
-                #warning("fix???")
             
             case .update(.one(let caseId)):
                 return (uri: "update_case/\(caseId)", method: .POST)
