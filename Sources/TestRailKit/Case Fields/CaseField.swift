@@ -7,14 +7,14 @@ public enum CaseField: ConfigurationRepresentable {
     
     /// adds a new case field
     /// See https://www.gurock.com/testrail/docs/api/reference/case-fields#add_case_fields
-    case add(caseField: TestRailNewCaseField)
+    case add
     
     public var request: RequestDetails {
         switch self {
         case .get:
-            return ("get_case_fields", .GET, nil)
-        case .add(let caseField):
-            return ("add_case_field", .POST, caseField)
+            return ("get_case_fields", .GET)
+        case .add:
+            return ("add_case_field", .POST)
         }
     }
 }

@@ -23,6 +23,6 @@ extension CaseUtilities {
     }
 }
 
-struct UpdateCase: TestRailModel {
+struct UpdateCase: TestRailPostable {
     let propertyId: Int
 }
