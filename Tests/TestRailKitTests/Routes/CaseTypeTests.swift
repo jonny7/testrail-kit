@@ -35,7 +35,7 @@ class CaseTypeTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.caseTypeResponseString)
 
         XCTAssertNoThrow(

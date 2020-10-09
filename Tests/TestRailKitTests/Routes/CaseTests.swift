@@ -35,7 +35,7 @@ class CaseTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.caseResponseString)
 
         XCTAssertNoThrow(
@@ -71,7 +71,7 @@ class CaseTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.casesResponseString)
 
         XCTAssertNoThrow(
@@ -120,7 +120,7 @@ class CaseTests: XCTestCase {
         XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailCase.self, from: body).title, "API Added Test")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.caseResponseString)
 
         XCTAssertNoThrow(
@@ -138,7 +138,7 @@ class CaseTests: XCTestCase {
             requestComplete = try! Self.utilities.client.action(resource: Case.update(type: .one(caseId: 88)), body: Self.utilities.updatedCase)
         )
 
-        var requestBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         requestBuffer.writeData(Self.utilities.updatedCaseEncoded)
         let contentLength = requestBuffer.readableBytes
 
@@ -170,7 +170,7 @@ class CaseTests: XCTestCase {
         XCTAssertEqual(body.getString(at: body.readerIndex, length: body.readableBytes)!, #"{"property_id":5}"#)
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.caseResponseString)
 
         XCTAssertNoThrow(
@@ -204,7 +204,7 @@ class CaseTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         let responseBody = "{}".data(using: .utf8)!
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeData(responseBody)
 
         XCTAssertNoThrow(
@@ -220,7 +220,6 @@ class CaseTests: XCTestCase {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
         XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Case.delete(type: .all(projectId: 9, soft: true, suiteId: nil))))
 
-        #warning("To add req/resp")
         XCTAssertNoThrow(
             XCTAssertEqual(
                 .head(
@@ -239,7 +238,7 @@ class CaseTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         let responseBody = "{}".data(using: .utf8)!
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeData(responseBody)
 
         XCTAssertNoThrow(
@@ -252,10 +251,9 @@ class CaseTests: XCTestCase {
     }
     
     func testGetCaseHistory() {
-        var requestComplete: EventLoopFuture<TestRailCase>!
+        var requestComplete: EventLoopFuture<TestRailCaseHitsory>!
         XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Case.get(type: .one(caseId: 99, history: true))))
         
-        #warning("To add req/resp")
         XCTAssertNoThrow(
             XCTAssertEqual(
                 .head(
@@ -273,8 +271,8 @@ class CaseTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
-        responseBuffer.writeString(Self.utilities.caseResponseString)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        responseBuffer.writeString(Self.utilities.caseWithHistoryResponseString)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -282,15 +280,15 @@ class CaseTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.title, Self.utilities.caseResponseDecoded.title)
+        XCTAssertEqual(response.id, 64)
+        XCTAssertEqual(response.changes.first?.field, "title")
     }
     
     func testUpdateAllCases() {
-        var requestComplete: EventLoopFuture<TestRailCase>!
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
         XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Case.update(type: .all(projectId: 5, suiteId: 2)), body: Self.utilities.updatedCase))
 
-        #warning("To add req/resp")
-        var requestBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         requestBuffer.writeData(Self.utilities.updatedCaseEncoded)
         let contentLength = requestBuffer.readableBytes
 
@@ -322,8 +320,9 @@ class CaseTests: XCTestCase {
         XCTAssertEqual(body.getString(at: body.readerIndex, length: body.readableBytes)!, #"{"property_id":5}"#)
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
-        responseBuffer.writeString(Self.utilities.caseResponseString)
+        let responseBody = "{}".data(using: .utf8)!
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        responseBuffer.writeData(responseBody)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -331,6 +330,6 @@ class CaseTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.id!, Self.utilities.caseResponseDecoded.id!)
+        XCTAssertEqual(response.data, responseBody)
     }
 }
