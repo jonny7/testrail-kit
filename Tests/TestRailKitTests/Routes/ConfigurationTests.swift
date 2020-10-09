@@ -35,7 +35,7 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.configurationResponseString)
 
         XCTAssertNoThrow(
@@ -85,7 +85,7 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.addConfigGroupResponseString)
 
         XCTAssertNoThrow(
@@ -136,7 +136,7 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.updatedConfigGroupResponseString)
 
         XCTAssertNoThrow(
@@ -187,7 +187,7 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.addConfigResponseString)
 
         XCTAssertNoThrow(
@@ -237,7 +237,7 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.updatedConfigResponseString)
 
         XCTAssertNoThrow(
@@ -272,7 +272,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         let responseBody = "{}".data(using: .utf8)!
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeData(responseBody)
 
         XCTAssertNoThrow(
@@ -307,7 +307,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         let responseBody = "{}".data(using: .utf8)!
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeData(responseBody)
 
         XCTAssertNoThrow(

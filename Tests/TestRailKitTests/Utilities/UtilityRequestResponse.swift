@@ -69,7 +69,52 @@ let caseRequest = TestRailCase(
     customStepsSeparated: [TestRailStep(content: "Logon with username and Password", expected: "Everything Works")],
     customMission: nil, customGoals: nil)
 
-//let updateCaseObject = UpdatedCase(propertyId: 5)
+let caseWithHistoryResponse = """
+{
+        "id": 64,
+        "type_id": 6,
+        "created_on": 1573844969,
+        "user_id": 2,
+        "changes": [
+            {
+                "type_id": 1,
+                "field": "title",
+                "old_value": "Search for Something",
+                "new_value": "Search for Something using a label"
+            },
+            {
+                "type_id": 6,
+                "old_text": null,
+                "new_text": null,
+                "label": "Steps",
+                "options": {
+                    "is_required": false,
+                    "default_value": "",
+                    "format": "markdown",
+                    "rows": "7"
+                },
+                "field": "custom_steps",
+                "old_value": "search for user with ID 5",
+                "new_value": "1. Click on search \\r\\n2. 2. Enter test person ID and click Search"
+            },
+            {
+                "type_id": 6,
+                "old_text": null,
+                "new_text": null,
+                "label": "Expected Result",
+                "options": {
+                    "is_required": false,
+                    "default_value": "",
+                    "format": "markdown",
+                    "rows": "7"
+                },
+                "field": "custom_expected",
+                "old_value": "Person should be found",
+                "new_value": "Person should be found with correct ID"
+            }
+        ]
+    }
+"""
 
 // Mark: CaseFields
 let newCaseFieldObject = TestRailNewCaseField(
