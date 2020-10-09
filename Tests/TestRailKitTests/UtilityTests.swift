@@ -2,14 +2,14 @@ import XCTest
 @testable import TestRailKit
 
 class UtilityTests: XCTestCase {
-    
+
     let utilities = TestingUtilities()
-    
+
     func testTestRailDecoder() {
         let attachment = TestRailAttachmentIdentifier(attachmentId: 100)
-        XCTAssertNoThrow(try attachment.encodeTestRailModel(encoder: self.utilities.encoder))
+        XCTAssertNoThrow(try attachment.encodeModel(encoder: self.utilities.encoder))
     }
-    
+
     func testBoolToIntCoder() {
         struct B: Encodable {
             @BoolToIntCoder var a: Bool = true

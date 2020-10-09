@@ -21,11 +21,11 @@ extension MilestoneUtilities {
     }
 }
 
-struct MyMilestone: TestRailModel {
+struct MyMilestone: TestRailPostable {
     let name: String
     let dueOn: Date
 }
 
-struct UpdatedMilestone: TestRailModel {
+struct UpdatedMilestone: TestRailPostable {
     let isCompleted: Bool
 }

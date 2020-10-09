@@ -16,7 +16,7 @@ class ConfigurationTests: XCTestCase {
 
     func testGetConfigs() {
         var requestComplete: EventLoopFuture<[TestRailConfigurationGroup]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(configurable: Configuration.get(projectId: 1)))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Configuration.get(projectId: 1)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -50,8 +50,7 @@ class ConfigurationTests: XCTestCase {
     func testAddConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailConfigurationGroup>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.add(type: .group(projectId: 1, group: Self.utilities.addConfigGroup)))
-        )
+            requestComplete = try Self.utilities.client.action(resource: Configuration.add(type: .group(projectId: 1)), body: Self.utilities.addConfigGroup))
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addConfigGroup.self, encoder: Self.utilities.encoder)
@@ -101,7 +100,7 @@ class ConfigurationTests: XCTestCase {
     func testUpdateConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailConfigurationGroup>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.update(type: .group(projectId: 1, group: Self.utilities.updateConfigGroup)))
+            requestComplete = try Self.utilities.client.action(resource: Configuration.update(type: .group(projectId: 1)), body: Self.utilities.updateConfigGroup)
         )
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
@@ -152,7 +151,7 @@ class ConfigurationTests: XCTestCase {
     func testAddConfig() {
         var requestComplete: EventLoopFuture<TestRailConfiguration>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.add(type: .config(groupId: 1, config: Self.utilities.addConfig)))
+            requestComplete = try Self.utilities.client.action(resource: Configuration.add(type: .config(groupId: 1)), body: Self.utilities.addConfig)
             )
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
@@ -203,8 +202,7 @@ class ConfigurationTests: XCTestCase {
     func testUpdateConfig() {
         var requestComplete: EventLoopFuture<TestRailConfiguration>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.update(type: .config(groupId: 1, config: Self.utilities.updateConfig)))
-        )
+            requestComplete = try Self.utilities.client.action(resource: Configuration.update(type: .config(groupId: 1)), body: Self.utilities.updateConfig))
                 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updateConfig.self, encoder: Self.utilities.encoder)
@@ -254,8 +252,7 @@ class ConfigurationTests: XCTestCase {
     func testDeleteConfig() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.delete(.config(configId: 1)))
-        )
+            requestComplete = try Self.utilities.client.action(resource: Configuration.delete(.config(configId: 1))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -290,8 +287,7 @@ class ConfigurationTests: XCTestCase {
     func testDeleteConfigGroup() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
         XCTAssertNoThrow(
-            requestComplete = try Self.utilities.client.action(configurable: Configuration.delete(.group(groupId: 1)))
-        )
+            requestComplete = try Self.utilities.client.action(resource: Configuration.delete(.group(groupId: 1))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(

@@ -6,7 +6,7 @@ public enum CaseType: ConfigurationRepresentable {
     public var request: RequestDetails {
         switch self {
         case .get:
-            return (uri: "get_case_types", method: .GET, body: nil)
+            return (uri: "get_case_types", method: .GET)
         }
     }
 }

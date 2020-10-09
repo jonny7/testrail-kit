@@ -7,3 +7,5 @@ public struct TestRailNewCaseField: TestRailModel {
     public var templateIds: [Int]?
     public var config: CaseFieldConfig?
 }
+
+extension TestRailNewCaseField: TestRailPostable {}
