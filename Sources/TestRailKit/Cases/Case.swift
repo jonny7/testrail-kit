@@ -4,9 +4,9 @@ public typealias TestRailFilter = [TestRailFilterOption: TestRailFilterValueBuil
 
 public enum Case: ConfigurationRepresentable {
     
-    case add(sectionId: Int, case: TestRailCase)
+    case add(sectionId: Int)
     case get(type: CaseGetAction)
-    case update(type: CaseSetAction, update: TestRailModel)
+    case update(type: CaseSetAction)
     case delete(type: CaseDeleteAction)
     
     public enum CaseSetAction {
@@ -37,35 +37,36 @@ public enum Case: ConfigurationRepresentable {
 
     public var request: RequestDetails {
         switch self {
-            case .add(let sectionId, let `case`):
-                return (uri: "add_case/\(sectionId)", method: .POST, body: `case`)
+        case .add(let sectionId):
+                return (uri: "add_case/\(sectionId)", method: .POST)
             
             case .get(.one(let caseId, let history)):
                 if history {
-                    return (uri: "get_history_for_case/\(caseId)", method: .GET, body: nil)
+                    return (uri: "get_history_for_case/\(caseId)", method: .GET)
                 }
-                return (uri: "get_case/\(caseId)", method: .GET, body: nil)
+                return (uri: "get_case/\(caseId)", method: .GET)
             
             case .get(.all(let projectId, let suiteId, let filter)):
                 let suite = self.getSuite(suiteId: suiteId)
                 let uri = "get_cases/\(projectId)\(suite)\(filter?.queryParameters ?? "")"
-                return (uri: uri, method: .GET, body: nil) // fix
+                return (uri: uri, method: .GET)
+                #warning("fix???")
             
-            case .update(.one(let caseId), let updated):
-                return (uri: "update_case/\(caseId)", method: .POST, body: updated)
+            case .update(.one(let caseId)):
+                return (uri: "update_case/\(caseId)", method: .POST)
             
-            case .update(type: .all(let projectId, let suiteId), let updated):
+            case .update(type: .all(let projectId, let suiteId)):
                 let suite =  self.getSuite(suiteId: suiteId)
-                return (uri: "update_cases/\(projectId)\(suite)", method: .POST, body: updated)
+                return (uri: "update_cases/\(projectId)\(suite)", method: .POST)
             
             case .delete(.one(let caseId, let soft)):
                 let softDeleted = self.getSoftDelete(soft: soft)
-                return (uri: "delete_case/\(caseId)\(softDeleted)", method: .POST, body: nil)
+                return (uri: "delete_case/\(caseId)\(softDeleted)", method: .POST)
                 
             case .delete(type: .all(let projectId, let soft, let suiteId)):
                 let suite =  self.getSuite(suiteId: suiteId)
                 let softDeleted = self.getSoftDelete(soft: soft)
-                return (uri: "delete_cases/\(projectId)\(suite)\(softDeleted)", method: .POST, body: nil)
+                return (uri: "delete_cases/\(projectId)\(suite)\(softDeleted)", method: .POST)
         }
     }
     

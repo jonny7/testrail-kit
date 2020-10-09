@@ -6,7 +6,6 @@ import NIOHTTP1
 public final class TestRailClient {
 
     var handler: TestRailAPIHandler
-    public var attachments: AttachmentRoutes
     public var headers: HTTPHeaders = [:]
 
     /// Initializes the TestRail Client
@@ -24,7 +23,6 @@ public final class TestRailClient {
         handler = TestRailAPIHandler(
             httpClient: httpClient, eventLoop: eventLoop, username: username, apiKey: apiKey,
             testRailBaseURL: testRailUrl, port: port)
-        attachments = TestRailAttachmentRoutes(apiHandler: handler)
     }
 
     /// ensures the correct `eventLoop` by hopping threads if needed
@@ -35,10 +33,32 @@ public final class TestRailClient {
 }
 
 extension TestRailClient: Routeable {
-    public func action<TM, C>(configurable: C) throws -> EventLoopFuture<TM> where TM : TestRailModel, C : ConfigurationRepresentable {
-        guard let body = try configurable.request.body?.encodeTestRailModel(encoder: self.handler.encoder) else {
-            return handler.send(method: configurable.request.method, path: configurable.request.uri, headers: headers)
+    public func action<C, TP, TM>(resource: C, body: TP) throws -> EventLoopFuture<TM> where C : ConfigurationRepresentable, TP : TestRailPostable, TM : TestRailModel {
+        let bodyAndHeaders = try self.encodeRelevantType(body: body, encoder: handler.encoder)
+        return handler.send(method: resource.request.method, path: resource.request.uri, body: bodyAndHeaders.body, headers: bodyAndHeaders.headers)
+    }
+    
+    public func action<C, TM>(resource: C) throws -> EventLoopFuture<TM> where C : ConfigurationRepresentable, TM : TestRailModel {
+        return handler.send(method: resource.request.method, path: resource.request.uri, headers: headers)
+    }
+}
+
+public typealias BodyAndHeaders = (body: HTTPClient.Body, headers: HTTPHeaders)
+
+extension TestRailClient {
+    func encodeRelevantType<E: Encodable>(body: E, encoder: JSONEncoder) throws -> BodyAndHeaders {
+        if body is Data {
+            return (body: .data(body as! Data), headers: self.setMultipartHeaders())
         }
-        return handler.send(method: configurable.request.method, path: configurable.request.uri, body: .string(body), headers: headers)
+        let json = try body.encodeModel(encoder: encoder)
+        return (body: .string(json), headers: self.headers)
+    }
+}
+
+extension TestRailClient {
+    func setMultipartHeaders() -> HTTPHeaders {
+        var multipart = HTTPHeaders()
+        multipart.replaceOrAdd(name: "content-type", value: "multipart/form-data")
+        return multipart
     }
 }

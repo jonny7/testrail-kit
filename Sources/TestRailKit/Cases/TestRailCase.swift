@@ -25,40 +25,7 @@ public struct TestRailCase: TestCaseRepresentable {
     public var customStepsSeparated: [TestRailStep]?
     public var customMission: String?
     public var customGoals: String?
-
-    public init(
-        id: Int? = nil, title: String, sectionId: Int, templateId: Int, typeId: Int, priorityId: Int,
-        milestoneId: Int?, refs: String?, createdBy: Int, createdOn: Date, updatedBy: Int,
-        updatedOn: Date, estimate: String?, estimateForecast: String?, suiteId: Int, displayOrder: Int,
-        customAutomationType: Int?, customTestrailLabel: String?, customPreconds: String?,
-        customSteps: String?, customExpected: String?, customStepsSeparated: [TestRailStep]?,
-        customMission: String?, customGoals: String?
-    ) {
-        self.id = id
-        self.title = title
-        self.sectionId = sectionId
-        self.templateId = templateId
-        self.typeId = typeId
-        self.priorityId = priorityId
-        self.milestoneId = milestoneId
-        self.refs = refs
-        self.createdBy = createdBy
-        self.createdOn = createdOn
-        self.updatedBy = updatedBy
-        self.updatedOn = updatedOn
-        self.estimate = estimate
-        self.estimateForecast = estimateForecast
-        self.suiteId = suiteId
-        self.displayOrder = displayOrder
-        self.customAutomationType = customAutomationType
-        self.customTestrailLabel = customTestrailLabel
-        self.customPreconds = customPreconds
-        self.customSteps = customSteps
-        self.customExpected = customExpected
-        self.customStepsSeparated = customStepsSeparated
-        self.customMission = customMission
-        self.customGoals = customGoals
-    }
 }
 
 extension TestRailCase: TestRailModel {}
+extension TestRailCase: TestRailPostable {}

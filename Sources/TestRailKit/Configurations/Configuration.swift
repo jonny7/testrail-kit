@@ -20,13 +20,13 @@ public enum Configuration: ConfigurationRepresentable {
     public var request: RequestDetails {
         switch self {
             case .get(let projectId):
-                return (uri: "get_configs/\(projectId)", method: .GET, body: nil)
+                return (uri: "get_configs/\(projectId)", method: .GET)
             case .add(let add):
-                return (uri: "add\(add.request.uri)", method: .POST, body: add.request.body)
+                return (uri: "add\(add.uri)", method: .POST)
             case .update(let update):
-                return (uri: "update\(update.request.uri)", method: .POST, body: update.request.body)
+                return (uri: "update\(update.uri)", method: .POST)
             case .delete(let option):
-                return (uri: option.request, method: .POST, body: nil)
+                return (uri: option.request, method: .POST)
         }
     }
     
@@ -57,21 +57,21 @@ public enum Configuration: ConfigurationRepresentable {
         /// - Parameters:
         ///   - projectId: Project ID
         ///   - newGroup: Name of new group
-        case group(projectId: Int, group: TestRailNewConfiguration)
+        case group(projectId: Int)
         
         /// Adds or modifies a new config to a group, eg "Chrome" to the config group of "Browsers"
         /// See - https://www.gurock.com/testrail/docs/api/reference/configurations#add_config
         /// - Parameters:
         ///   - groupId: Group ID for config
         ///   - config: The new configuration name
-        case config(groupId: Int, config: TestRailNewConfiguration)
+        case config(groupId: Int)
 
-        var request: (uri: String, body: TestRailModel) {
+        var uri: String {
             switch self {
-            case .group(let projectId, let group):
-                return ("_config_group/\(projectId)", group)
-            case .config(let groupId, let config):
-                return ("_config/\(groupId)", config)
+            case .group(let projectId):
+                return ("_config_group/\(projectId)")
+            case .config(let groupId):
+                return ("_config/\(groupId)")
             }
         }
     }
