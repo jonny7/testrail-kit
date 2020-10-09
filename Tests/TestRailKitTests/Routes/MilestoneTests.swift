@@ -51,7 +51,7 @@ class MilestoneTests: XCTestCase {
         XCTAssertEqual(try! Self.utilities.decoder.decode(MyMilestone.self, from: body).name, "My Milestone")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.addedMilestoneResponseString)
 
         XCTAssertNoThrow(
@@ -84,7 +84,7 @@ class MilestoneTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.addedMilestoneResponseString)
 
         XCTAssertNoThrow(
@@ -117,7 +117,7 @@ class MilestoneTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.embeddedMilestoneResponseString)
 
         XCTAssertNoThrow(
@@ -150,7 +150,7 @@ class MilestoneTests: XCTestCase {
 
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.addedMilestoneResponseString)
 
         XCTAssertNoThrow(
@@ -199,7 +199,7 @@ class MilestoneTests: XCTestCase {
         XCTAssertEqual(body.getString(at: body.readerIndex, length: body.readableBytes)!, #"{"is_completed":true}"#)
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 250)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.updatedMilestoneResponseString)
 
         XCTAssertNoThrow(
@@ -233,7 +233,7 @@ class MilestoneTests: XCTestCase {
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         let responseBody = "{}".data(using: .utf8)!
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeData(responseBody)
 
         XCTAssertNoThrow(

@@ -35,7 +35,7 @@ class CaseFieldTests: XCTestCase {
 
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 500)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.caseFieldsResponseString)
 
         XCTAssertNoThrow(
@@ -85,7 +85,7 @@ class CaseFieldTests: XCTestCase {
         XCTAssertEqual(try! Self.utilities.decoder.decode(TestRailNewCaseField.self, from: body).name, "Brand New Case")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 300)
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
         responseBuffer.writeString(Self.utilities.addedCaseFieldResponseString)
 
         XCTAssertNoThrow(
