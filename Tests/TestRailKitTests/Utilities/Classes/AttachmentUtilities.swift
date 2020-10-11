@@ -11,11 +11,11 @@ class AttachmentUtilities: TestingUtilities {
 }
 
 extension AttachmentUtilities {
-    var attachmentsForCaseDecoded: [TestRailAttachment] {
-        try! self.decoder.decode([TestRailAttachment].self, from: attachmentsForCaseResponse.data(using: .utf8)!)
+    var attachmentsForCaseDecoded: [Attachment] {
+        try! self.decoder.decode([Attachment].self, from: attachmentsForCaseResponse.data(using: .utf8)!)
     }
 
-    var attachmentIdentifierDecoded: TestRailAttachmentIdentifier {
-        try! self.decoder.decode(TestRailAttachmentIdentifier.self, from: attachmentIdentifierResponse.data(using: .utf8)!)
+    var attachmentIdentifierDecoded: AttachmentIdentifier {
+        try! self.decoder.decode(AttachmentIdentifier.self, from: attachmentIdentifierResponse.data(using: .utf8)!)
     }
 }

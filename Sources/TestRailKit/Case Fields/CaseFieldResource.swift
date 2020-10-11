@@ -1,6 +1,6 @@
 import NIOHTTP1
 
-public enum CaseField: ConfigurationRepresentable {
+public enum CaseFieldResource: ConfigurationRepresentable {
     /// gets all case fields
     /// See https://www.gurock.com/testrail/docs/api/reference/case-fields#get_case_fields
     case get

@@ -1,4 +1,4 @@
-public struct TestRailNewCaseField: TestRailModel {
+public struct NewCaseField: TestRailModel {
     public var type: CaseFieldType
     public var name: String
     public var label: String
@@ -8,4 +8,4 @@ public struct TestRailNewCaseField: TestRailModel {
     public var config: CaseFieldConfig?
 }
 
-extension TestRailNewCaseField: TestRailPostable {}
+extension NewCaseField: TestRailPostable {}

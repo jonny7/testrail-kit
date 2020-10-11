@@ -4,22 +4,22 @@ import Foundation
 
 class ConfigurationUtilities: TestingUtilities {
     let configurationResponseString = configResponse
-    let addConfigGroup = TestRailNewConfiguration(name: "Browsers")
+    let addConfigGroup = NewConfiguration(name: "Browsers")
     let addConfigGroupResponseString = addConfigGroupResponse
-    let addConfig = TestRailNewConfiguration(name: "Chrome")
+    let addConfig = NewConfiguration(name: "Chrome")
     let addConfigResponseString = addConfigResponse
-    let updateConfigGroup = TestRailNewConfiguration(name: "OS")
+    let updateConfigGroup = NewConfiguration(name: "OS")
     let updatedConfigGroupResponseString = updatedConfifGroupResponse
-    let updateConfig = TestRailNewConfiguration(name: "Mac OS")
+    let updateConfig = NewConfiguration(name: "Mac OS")
     let updatedConfigResponseString = updatedConfigResponse
 }
 
 extension ConfigurationUtilities {
-    var configurationResponseDecoded: [TestRailNewConfiguration] {
-        try! self.decoder.decode([TestRailNewConfiguration].self, from: configurationResponseString.data(using: .utf8)!)
+    var configurationResponseDecoded: [NewConfiguration] {
+        try! self.decoder.decode([NewConfiguration].self, from: configurationResponseString.data(using: .utf8)!)
     }
 
-    var addConfigResponseDecoded: TestRailNewConfiguration {
-        try! self.decoder.decode(TestRailNewConfiguration.self, from: addConfigResponseString.data(using: .utf8)!)
+    var addConfigResponseDecoded: NewConfiguration {
+        try! self.decoder.decode(NewConfiguration.self, from: addConfigResponseString.data(using: .utf8)!)
     }
 }

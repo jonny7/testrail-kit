@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TestRailCaseField: CaseFieldRepresentable {
+public struct CaseField: CaseFieldRepresentable {
     public var id: Int?
     public var isActive: Bool
     public var typeId: Int
@@ -14,4 +14,4 @@ public struct TestRailCaseField: CaseFieldRepresentable {
     public var templateIds: [Int]
 }
 
-extension TestRailCaseField: TestRailModel {}
+extension CaseField: TestRailModel {}

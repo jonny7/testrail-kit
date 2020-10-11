@@ -1,25 +1,18 @@
-public enum Milestone: ConfigurationRepresentable {
-    
-    case get(identifier: Int, type: RecordAction)
-    case add(projectId: Int)
-    case update(milestoneId: Int)
-    case delete(milesoneId: Int)
+import Foundation
 
-    public var request: RequestDetails {
-        switch self {
-        case .get(let identifier, let type):
-            guard case .one = type else {
-                return (uri: "get_milestones/\(identifier)", method: .GET)
-            }
-            return (uri: "get_milestone/\(identifier)", method: .GET)
-        case .add(let projectId):
-            return (uri: "add_milestone/\(projectId)", method: .POST)
-        case .update(let milestoneId):
-            return (uri: "update_milestone/\(milestoneId)", method: .POST)
-        case .delete(milesoneId: let milesoneId):
-            return (uri: "delete_milestone/\(milesoneId)", method: .POST)
-        }
-    }
+struct Milestone: TestRailModel {
+    var id: Int?
+    var name: String
+    var description: String?
+    var startOn: Date?
+    var startedOn: Date?
+    var isStarted: Bool
+    var dueOn: Date
+    var isCompleted: Bool
+    var completedOn: Date?
+    var projectId: Int
+    var parentId: Int?
+    var refs: String?
+    var url: String
+    var milestones: [Milestone]?
 }
-
-

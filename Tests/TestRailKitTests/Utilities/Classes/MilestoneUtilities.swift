@@ -12,12 +12,12 @@ class MilestoneUtilities: TestingUtilities {
 }
 
 extension MilestoneUtilities {
-    var addedMilestoneDecoded: TestRailMilestone {
-        try! self.decoder.decode(TestRailMilestone.self, from: addedMilestoneResponseString.data(using: .utf8)!)
+    var addedMilestoneDecoded: Milestone {
+        try! self.decoder.decode(Milestone.self, from: addedMilestoneResponseString.data(using: .utf8)!)
     }
     
-    var embeddedMilestoneDecoded: TestRailMilestone {
-        try! self.decoder.decode(TestRailMilestone.self, from: embeddedMilestoneResponseString.data(using: .utf8)!)
+    var embeddedMilestoneDecoded: Milestone {
+        try! self.decoder.decode(Milestone.self, from: embeddedMilestoneResponseString.data(using: .utf8)!)
     }
 }
 
