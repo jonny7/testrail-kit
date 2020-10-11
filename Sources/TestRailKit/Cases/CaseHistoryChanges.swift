@@ -1,4 +1,4 @@
-public struct TestRailCaseHistoryChanges: Codable {
+public struct CaseHistoryChanges: Codable {
     var typeId: Int?
     var field: String?
     var oldValue: String?

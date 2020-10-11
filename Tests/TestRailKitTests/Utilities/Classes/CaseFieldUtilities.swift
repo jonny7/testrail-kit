@@ -9,11 +9,11 @@ class CaseFieldUtilities: TestingUtilities {
 }
 
 extension CaseFieldUtilities {
-    var caseFieldsResponseDecoded: [TestRailCaseField] {
-        try! self.decoder.decode([TestRailCaseField].self, from: caseFieldsResponseString.data(using: .utf8)!)
+    var caseFieldsResponseDecoded: [CaseField] {
+        try! self.decoder.decode([CaseField].self, from: caseFieldsResponseString.data(using: .utf8)!)
     }
 
-    var addedCaseFieldResponseDecoded: AddedTestRailCaseField {
-        try! self.decoder.decode(AddedTestRailCaseField.self, from: addedCaseFieldResponseString.data(using: .utf8)!)
+    var addedCaseFieldResponseDecoded: AddedCaseField {
+        try! self.decoder.decode(AddedCaseField.self, from: addedCaseFieldResponseString.data(using: .utf8)!)
     }
 }

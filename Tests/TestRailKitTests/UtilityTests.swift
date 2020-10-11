@@ -6,7 +6,7 @@ class UtilityTests: XCTestCase {
     let utilities = TestingUtilities()
 
     func testTestRailDecoder() {
-        let attachment = TestRailAttachmentIdentifier(attachmentId: 100)
+        let attachment = AttachmentIdentifier(attachmentId: 100)
         XCTAssertNoThrow(try attachment.encodeModel(encoder: self.utilities.encoder))
     }
 

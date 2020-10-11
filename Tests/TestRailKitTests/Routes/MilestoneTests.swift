@@ -15,9 +15,9 @@ class MilestoneTests: XCTestCase {
     }
     
     func testAddMilestone() {
-        var requestComplete: EventLoopFuture<TestRailMilestone>!
+        var requestComplete: EventLoopFuture<Milestone>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.action(resource: Milestone.add(projectId: 3), body: Self.utilities.addMilestone))
+            requestComplete = try! Self.utilities.client.action(resource: MilestoneResource.add(projectId: 3), body: Self.utilities.addMilestone))
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.addMilestone.self, encoder: Self.utilities.encoder)
@@ -64,8 +64,8 @@ class MilestoneTests: XCTestCase {
     }
 
     func testGetMilestone() {
-        var requestComplete: EventLoopFuture<TestRailMilestone>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Milestone.get(identifier: 4, type: .one)))
+        var requestComplete: EventLoopFuture<Milestone>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: MilestoneResource.get(identifier: 4, type: .one)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -97,8 +97,8 @@ class MilestoneTests: XCTestCase {
     }
     
     func testGetEmbeddedMilestone() {
-        var requestComplete: EventLoopFuture<TestRailMilestone>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Milestone.get(identifier: 4, type: .one)))
+        var requestComplete: EventLoopFuture<Milestone>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: MilestoneResource.get(identifier: 4, type: .one)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -130,8 +130,8 @@ class MilestoneTests: XCTestCase {
     }
     
     func testGetMilestones() {
-        var requestComplete: EventLoopFuture<TestRailMilestone>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Milestone.get(identifier: 1, type: .all)))
+        var requestComplete: EventLoopFuture<Milestone>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: MilestoneResource.get(identifier: 1, type: .all)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -163,9 +163,9 @@ class MilestoneTests: XCTestCase {
     }
     
     func testUpdateMilestone() {
-        var requestComplete: EventLoopFuture<TestRailMilestone>!
+        var requestComplete: EventLoopFuture<Milestone>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.action(resource: Milestone.update(milestoneId: 39), body: Self.utilities.updatedMilestone))
+            requestComplete = try! Self.utilities.client.action(resource: MilestoneResource.update(milestoneId: 39), body: Self.utilities.updatedMilestone))
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
         try! requestBuffer.writeJSONEncodable(Self.utilities.updatedMilestone, encoder: Self.utilities.encoder)
@@ -213,7 +213,7 @@ class MilestoneTests: XCTestCase {
     
     func testDeleteMilestone() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: Milestone.delete(milesoneId: 362)))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: MilestoneResource.delete(milesoneId: 362)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(

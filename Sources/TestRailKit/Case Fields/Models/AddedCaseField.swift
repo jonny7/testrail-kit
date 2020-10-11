@@ -1,4 +1,4 @@
-public struct AddedTestRailCaseField: CaseFieldRepresentable, AddedCaseFieldRepresentable {
+public struct AddedCaseField: CaseFieldRepresentable, AddedCaseFieldRepresentable {
     public var entityId: Int
     public var locationId: Int
     public var isMulti: Int
@@ -17,4 +17,4 @@ public struct AddedTestRailCaseField: CaseFieldRepresentable, AddedCaseFieldRepr
     public var templateIds: [Int]
 }
 
-extension AddedTestRailCaseField: TestRailModel {}
+extension AddedCaseField: TestRailModel {}

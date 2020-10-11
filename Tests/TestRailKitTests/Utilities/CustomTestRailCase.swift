@@ -24,7 +24,7 @@ struct CustomTestRailCase: TestCaseRepresentable, TestRailModel {
     var customPreconds: String?
     var customSteps: String?
     var customExpected: String?
-    var customStepsSeparated: [TestRailStep]?
+    var customStepsSeparated: [CaseStep]?
     var customMission: String?
     var customGoals: String?
     let customSystemThing: String

@@ -1,12 +1,5 @@
-public enum CaseType: ConfigurationRepresentable {
-    /// Returns a list of available case types.
-    /// See https://www.gurock.com/testrail/docs/api/reference/case-types
-    case get
-    
-    public var request: RequestDetails {
-        switch self {
-        case .get:
-            return (uri: "get_case_types", method: .GET)
-        }
-    }
+public struct CaseType: TestRailModel {
+    public var id: Int
+    public var isDefault: Bool
+    public var name: String
 }

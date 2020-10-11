@@ -11,20 +11,20 @@ class CaseUtilities: TestingUtilities {
 }
 
 extension CaseUtilities {
-    var caseResponseDecoded: TestRailCase {
-        try! self.decoder.decode(TestRailCase.self, from: caseResponseString.data(using: .utf8)!)
+    var caseResponseDecoded: Case {
+        try! self.decoder.decode(Case.self, from: caseResponseString.data(using: .utf8)!)
     }
 
-    var casesResponseDecoded: [TestRailCase] {
-        try! self.decoder.decode([TestRailCase].self, from: casesResponseString.data(using: .utf8)!)
+    var casesResponseDecoded: [Case] {
+        try! self.decoder.decode([Case].self, from: casesResponseString.data(using: .utf8)!)
     }
 
     var updatedCaseEncoded: Data {
         try! self.encoder.encode(self.updatedCase)
     }
     
-    var caseWithHistroyDecoded: TestRailCaseHitsory {
-        try! self.decoder.decode(TestRailCaseHitsory.self, from: caseWithHistoryResponseString.data(using: .utf8)!)
+    var caseWithHistroyDecoded: CaseHitsory {
+        try! self.decoder.decode(CaseHitsory.self, from: caseWithHistoryResponseString.data(using: .utf8)!)
     }
 }
 

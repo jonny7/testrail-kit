@@ -15,8 +15,8 @@ class CaseTypeTests: XCTestCase {
     }
 
     func testGetCaseFields() {
-        var requestComplete: EventLoopFuture<[TestRailCaseType]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: CaseType.get))
+        var requestComplete: EventLoopFuture<[CaseType]>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: CaseTypeResource.get))
 
         XCTAssertNoThrow(
             XCTAssertEqual(

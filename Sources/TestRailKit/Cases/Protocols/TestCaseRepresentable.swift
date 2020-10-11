@@ -22,7 +22,7 @@ protocol TestCaseRepresentable {
     var customPreconds: String? { get }
     var customSteps: String? { get }
     var customExpected: String? { get }
-    var customStepsSeparated: [TestRailStep]? { get }
+    var customStepsSeparated: [CaseStep]? { get }
     var customMission: String? { get }
     var customGoals: String? { get }
 }
