@@ -1222,3 +1222,16 @@ let updateRunInPlanEntryResponseString = """
     ]
 }
 """
+
+// MARK: Priorities
+let priorityResponseString = """
+[
+    {
+        "id": 1,
+        "is_default": false,
+        "name": "1 - Don't Test",
+        "priority": 1,
+        "short_name": "1 - Don't"
+    }
+]
+"""
