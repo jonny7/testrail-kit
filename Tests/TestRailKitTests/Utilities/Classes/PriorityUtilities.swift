@@ -5,6 +5,3 @@ import Foundation
 class PriorityUtilities: TestingUtilities {
     let priorityRespone = priorityResponseString
 }
-
-extension CaseFieldUtilities {
-}
