@@ -89,7 +89,7 @@ class CaseTests: XCTestCase {
             requestComplete = try! Self.utilities.client.action(resource: CaseResource.add(sectionId: 275), body: Self.utilities.caseRequestObject))
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        try! requestBuffer.writeJSONEncodable(Self.utilities.caseRequestObject.self, encoder: Self.utilities.encoder)
+        try! requestBuffer.writeJSONEncodable(Self.utilities.caseRequestObject, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
 
         XCTAssertNoThrow(
