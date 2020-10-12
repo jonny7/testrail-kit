@@ -42,15 +42,12 @@ public enum ProjectResource: ConfigurationRepresentable {
     }
     
     public enum ProjectFilter {
-        case isCompleted(complete: Bool?)
+        case isCompleted(complete: Bool)
         
         public var completed: String {
             switch self {
             case .isCompleted(let complete):
-                guard let bool = complete else {
-                    return ""
-                }
-                return bool ? "&is_completed=1" : "&is_completed=0"
+                return complete ? "&is_completed=1" : "&is_completed=0"
             }
         }
     }
