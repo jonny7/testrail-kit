@@ -1235,3 +1235,17 @@ let priorityResponseString = """
     }
 ]
 """
+
+// MARK: Projects
+let projectResponseString = """
+{
+    "id": 3,
+    "name": "iOS",
+    "announcement": null,
+    "show_announcement": false,
+    "is_completed": false,
+    "completed_on": null,
+    "suite_mode": 3,
+    "url": "https://me.testrail.io/index.php?/projects/overview/3"
+}
+"""
