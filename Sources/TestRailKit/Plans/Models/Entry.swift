@@ -1,11 +1,11 @@
 import Foundation
 
 public struct Entry: TestRailModel {
-    var id: UUID
-    var suiteId: Int?
-    var name: String
-    var refs: String?
-    var description: String?
-    var includeAll: Bool
-    var runs: [Run]
+    public var id: UUID
+    public var suiteId: Int?
+    public var name: String
+    public var refs: String?
+    public var description: String?
+    public var includeAll: Bool
+    public var runs: [Run]
 }
