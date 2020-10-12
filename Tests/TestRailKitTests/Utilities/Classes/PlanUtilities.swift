@@ -23,6 +23,12 @@ extension PlanUtilities {
     var addedPlanDecoded: Plan {
         try! self.decoder.decode(Plan.self, from: addedPlanResponseString.data(using: .utf8)!)
     }
+    
+    var closedPlan: Plan {
+        var closedPlan = try! self.decoder.decode(Plan.self, from: planResponseString.data(using: .utf8)!)
+        closedPlan.isCompleted = true
+        return closedPlan
+    }
 }
 
 struct MyPlan: TestRailPostable {

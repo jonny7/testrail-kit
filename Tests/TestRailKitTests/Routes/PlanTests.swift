@@ -379,4 +379,140 @@ class PlanTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.entries![1].runs[0].description, "Updated Plan Entry Run")
     }
+    
+    func testClosePlan() {
+        var requestComplete: EventLoopFuture<Plan>!
+        XCTAssertNoThrow(
+            requestComplete = try! Self.utilities.client.action(resource: PlanResource.close(planId: 88)))
+
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .POST,
+                        uri: "/index.php?/api/v2/close_plan/88",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+        
+        XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
+
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        try! responseBuffer.writeJSONEncodable(Self.utilities.closedPlan, encoder: Self.utilities.encoder)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.isCompleted, true)
+    }
+
+    func testDeletePlan() {
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: PlanResource.delete(type: .plan(planId: 88))))
+
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .POST,
+                        uri: "/index.php?/api/v2/delete_plan/88",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        let responseBody = "{}".data(using: .utf8)!
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        responseBuffer.writeData(responseBody)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data, responseBody)
+    }
+
+    func testDeletePlanEntry() {
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: PlanResource.delete(type: .planEntry(planId: 88, entryId: UUID.init(uuidString: "ec367af5-14d0-417a-83ed-9afce205d197")!))))
+
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .POST,
+                        uri: "/index.php?/api/v2/delete_plan_entry/88/ec367af5-14d0-417a-83ed-9afce205d197",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        let responseBody = "{}".data(using: .utf8)!
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        responseBuffer.writeData(responseBody)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data, responseBody)
+    }
+
+    func testDeleteRunFromPlanEntry() {
+        var requestComplete: EventLoopFuture<TestRailDataResponse>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: PlanResource.delete(type: .planEntry(planId: 88, entryId: UUID.init(uuidString: "ec367af5-14d0-417a-83ed-9afce205d197")!))))
+
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .POST,
+                        uri: "/index.php?/api/v2/delete_plan_entry/88/ec367af5-14d0-417a-83ed-9afce205d197",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        let responseBody = "{}".data(using: .utf8)!
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        responseBuffer.writeData(responseBody)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.data, responseBody)
+    }
 }
