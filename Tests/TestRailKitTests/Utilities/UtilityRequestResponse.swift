@@ -1249,3 +1249,48 @@ let projectResponseString = """
     "url": "https://me.testrail.io/index.php?/projects/overview/3"
 }
 """
+
+// MARK: Reports
+let getReportsString = """
+[
+    {
+        "id": 1,
+        "name": "Activity Summary (Cases) %date%",
+        "description": null,
+        "notify_user": false,
+        "notify_link": false,
+        "notify_link_recipients": null,
+        "notify_attachment": false,
+        "notify_attachment_recipients": "person1@example.com\\r\\nperson2@example.com",
+        "notify_attachment_html_format": false,
+        "notify_attachment_pdf_format": false,
+        "cases_groupby": "day",
+        "changes_daterange": "5",
+        "changes_daterange_from": null,
+        "changes_daterange_to": null,
+        "suites_include": "1",
+        "suites_ids": null,
+        "sections_include": "1",
+        "sections_ids": null,
+        "cases_columns": {
+            "cases:id": 75,
+            "cases:title": 0,
+            "cases:created_by": 125,
+            "cases:updated_by": 125
+        },
+        "cases_filters": null,
+        "cases_limit": 1000,
+        "content_hide_links": false,
+        "cases_include_new": true,
+        "cases_include_updated": true
+    }
+]
+"""
+
+let runReportResponseString = """
+{
+    "report_url": "https://docs.testrail.com/index.php?/reports/view/383",
+    "report_html": "https://docs.testrail.com/index.php?/reports/get_html/383",
+    "report_pdf": "https://docs.testrail.com/index.php?/reports/get_pdf/383"
+}
+"""
