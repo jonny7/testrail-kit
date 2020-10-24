@@ -37,7 +37,7 @@ extension TestRailClient: Routeable {
         let bodyAndHeaders = try self.encodeRelevantType(body: body, encoder: handler.encoder)
         return handler.send(method: resource.request.method, path: resource.request.uri, body: bodyAndHeaders.body, headers: bodyAndHeaders.headers)
     }
-    
+
     public func action<C, TM>(resource: C) throws -> EventLoopFuture<TM> where C : ConfigurationRepresentable, TM : TestRailModel {
         return handler.send(method: resource.request.method, path: resource.request.uri, headers: headers)
     }

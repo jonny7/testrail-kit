@@ -1294,3 +1294,76 @@ let runReportResponseString = """
     "report_pdf": "https://docs.testrail.com/index.php?/reports/get_pdf/383"
 }
 """
+
+// MARK: Results
+let resultForTestResponseString = """
+    {
+        "id": 9436,
+        "test_id": 104536,
+        "status_id": 1,
+        "created_on": 1600971013,
+        "assignedto_id": null,
+        "comment": "![](index.php?/attachments/get/251)\\n",
+        "version": null,
+        "elapsed": null,
+        "defects": null,
+        "custom_step_results": [
+            {
+                "content": "Step 1 Record something important",
+                "expected": "I expect it done",
+                "actual": "Yay!",
+                "status_id": 1
+            }
+        ],
+        "attachment_ids": [
+            251
+        ]
+    }
+"""
+
+let resultsForCaseResponseString = """
+[
+    {
+        "id": 8722,
+        "test_id": 103641,
+        "status_id": 1,
+        "created_on": 1598968324,
+        "assignedto_id": null,
+        "comment": null,
+        "version": null,
+        "elapsed": null,
+        "defects": null,
+        "custom_step_results": null,
+        "attachment_ids": []
+    }
+]
+"""
+
+let addTestResult = NewTestResult(statusId: .passed, comment: "IDs don't match", version: nil, elapsed: nil, defects: nil, assignedTo: 5, customStepResults: [StepResult(content: "Step 1 Record something important", expected: nil, actual: nil, statusId: .failed)])
+
+let addMultipleTestResults = AddMultipleTestResults(results: [NewTestResult(testId: 271188, statusId: .failed, comment: "This test fails", version: "1.0 RC", elapsed: "15s", defects: "TR-7", assignedTo: nil, customStepResults: [StepResult(content: "Launch App from desktop", expected: "It works", actual: "Works", statusId: .passed)])])
+
+let addedMultipleTestsResponseString = """
+[
+    {
+        "id": 12509,
+        "test_id": 271188,
+        "status_id": 5,
+        "created_on": 1603552928,
+        "assignedto_id": null,
+        "comment": "This test failed",
+        "version": "1.0 RC1 build 3724",
+        "elapsed": "15s",
+        "defects": "TR-7",
+        "custom_step_results": [
+            {
+                "content": "Launch App from desktop",
+                "expected": "It works",
+                "actual": "Works",
+                "status_id": 1
+            }
+        ],
+        "attachment_ids": []
+    }
+]
+"""
