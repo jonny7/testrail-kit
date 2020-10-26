@@ -484,7 +484,7 @@ class PlanTests: XCTestCase {
 
     func testDeleteRunFromPlanEntry() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: PlanResource.delete(type: .planEntry(planId: 88, entryId: UUID.init(uuidString: "ec367af5-14d0-417a-83ed-9afce205d197")!))))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: PlanResource.delete(type: .runInPlanEntry(runId: 88))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -492,7 +492,7 @@ class PlanTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .POST,
-                        uri: "/index.php?/api/v2/delete_plan_entry/88/ec367af5-14d0-417a-83ed-9afce205d197",
+                        uri: "/index.php?/api/v2/delete_run_from_plan_entry/88",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),

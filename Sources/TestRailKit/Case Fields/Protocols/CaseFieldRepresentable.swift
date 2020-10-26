@@ -5,7 +5,7 @@ protocol CaseFieldRepresentable {
     var name: String { get }
     var systemName: String { get }
     var label: String { get }
-    var description: String { get }
+    var description: String? { get }
     var displayOrder: Int { get }
     var includeAll: Bool { get }
     var templateIds: [Int] { get }
