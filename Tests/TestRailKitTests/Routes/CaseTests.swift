@@ -82,6 +82,39 @@ class CaseTests: XCTestCase {
         let response = try! requestComplete.wait()
         XCTAssertEqual(response.first?.title, Self.utilities.casesResponseDecoded.first?.title)
     }
+    
+    func testGetCasesNoFilter() {
+        var requestComplete: EventLoopFuture<[Case]>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: CaseResource.get(type: .all(projectId: 3, suiteId: 5, filter: nil))))
+        
+        XCTAssertNoThrow(
+            XCTAssertEqual(
+                .head(
+                    .init(
+                        version: .init(major: 1, minor: 1),
+                        method: .GET,
+                        uri: "/index.php?/api/v2/get_cases/3&suite_id=5",
+                        headers: .init([
+                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
+                            ("content-type", "application/json; charset=utf-8"),
+                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
+                            ("Content-Length", "0"),
+                        ]))),
+                try Self.utilities.testServer.readInbound()))
+
+        XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
+
+        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
+        responseBuffer.writeString(Self.utilities.casesResponseString)
+
+        XCTAssertNoThrow(
+            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
+        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
+
+        let response = try! requestComplete.wait()
+        XCTAssertEqual(response.first?.title, Self.utilities.casesResponseDecoded.first?.title)
+    }
 
     func testAddCase() {
         var requestComplete: EventLoopFuture<Case>!
@@ -184,7 +217,7 @@ class CaseTests: XCTestCase {
 
     func testDeleteCase() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: CaseResource.delete(type: .one(caseId: 88, soft: true))))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: CaseResource.delete(type: .one(caseId: 88, soft: false))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -192,7 +225,7 @@ class CaseTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .POST,
-                        uri: "/index.php?/api/v2/delete_case/88&soft=1",
+                        uri: "/index.php?/api/v2/delete_case/88",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
