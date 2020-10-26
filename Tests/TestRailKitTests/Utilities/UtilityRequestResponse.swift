@@ -1367,3 +1367,39 @@ let addedMultipleTestsResponseString = """
     }
 ]
 """
+
+// MARK: Result Field
+let resultFieldResponseString = """
+[
+    {
+        "id": 11,
+        "is_active": true,
+        "type_id": 11,
+        "name": "step_results",
+        "system_name": "custom_step_results",
+        "label": "Steps",
+        "description": null,
+        "configs": [
+            {
+                "context": {
+                    "is_global": true,
+                    "project_ids": null
+                },
+                "options": {
+                    "is_required": false,
+                    "format": "markdown",
+                    "has_expected": true,
+                    "has_actual": true,
+                    "rows": "5"
+                },
+                "id": "4be97c65ea2fd"
+            }
+        ],
+        "display_order": 1,
+        "include_all": false,
+        "template_ids": [
+            2
+        ]
+    }
+]
+"""

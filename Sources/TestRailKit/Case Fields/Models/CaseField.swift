@@ -7,7 +7,7 @@ public struct CaseField: CaseFieldRepresentable {
     public var name: String
     public var systemName: String
     public var label: String
-    public var description: String
+    public var description: String?
     public var configs: [CaseFieldConfig]
     public var displayOrder: Int
     public var includeAll: Bool
