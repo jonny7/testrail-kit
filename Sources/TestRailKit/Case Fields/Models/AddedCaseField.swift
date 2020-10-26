@@ -10,7 +10,7 @@ public struct AddedCaseField: CaseFieldRepresentable, AddedCaseFieldRepresentabl
     public var name: String
     public var systemName: String
     public var label: String
-    public var description: String
+    public var description: String?
     public var configs: String  // TestRail Changes from a object when using get, to a string when returning a succesffully added case_field
     public var displayOrder: Int
     @BoolToIntCoder var includeAll: Bool
