@@ -1403,3 +1403,181 @@ let resultFieldResponseString = """
     }
 ]
 """
+
+// MARK: Run
+let runResponse = """
+{
+    "id": 89,
+    "suite_id": 6,
+    "name": "Regression",
+    "description": null,
+    "milestone_id": 3,
+    "assignedto_id": null,
+    "include_all": true,
+    "is_completed": false,
+    "completed_on": null,
+    "config": null,
+    "config_ids": [],
+    "passed_count": 975,
+    "blocked_count": 0,
+    "untested_count": 119,
+    "retest_count": 0,
+    "failed_count": 40,
+    "custom_status1_count": 0,
+    "custom_status2_count": 0,
+    "custom_status3_count": 0,
+    "custom_status4_count": 0,
+    "custom_status5_count": 0,
+    "custom_status6_count": 0,
+    "custom_status7_count": 0,
+    "project_id": 3,
+    "plan_id": 88,
+    "created_on": 1597405960,
+    "updated_on": 1602603574,
+    "refs": null,
+    "created_by": 1,
+    "url": "https://me.testrail.io:8001/index.php?/runs/view/89"
+}
+"""
+
+let runsResponse = """
+[
+    {
+        "id": 86,
+        "suite_id": 6,
+        "name": "iOS Regression",
+        "description": null,
+        "milestone_id": null,
+        "assignedto_id": null,
+        "include_all": true,
+        "is_completed": true,
+        "completed_on": 1598546668,
+        "config": null,
+        "config_ids": [],
+        "passed_count": 932,
+        "blocked_count": 5,
+        "untested_count": 193,
+        "retest_count": 0,
+        "failed_count": 54,
+        "custom_status1_count": 0,
+        "custom_status2_count": 0,
+        "custom_status3_count": 0,
+        "custom_status4_count": 0,
+        "custom_status5_count": 0,
+        "custom_status6_count": 0,
+        "custom_status7_count": 0,
+        "project_id": 3,
+        "plan_id": null,
+        "created_on": 1594380376,
+        "updated_on": 1597750586,
+        "refs": null,
+        "created_by": 1,
+        "url": "https://me.testrail.io:8001/index.php?/runs/view/86"
+    }
+]
+"""
+
+let addedRunResponseString = """
+{
+    "id": 202,
+    "suite_id": 1,
+    "name": "Remote",
+    "description": "A description",
+    "milestone_id": null,
+    "assignedto_id": null,
+    "include_all": true,
+    "is_completed": false,
+    "completed_on": null,
+    "config": null,
+    "config_ids": [],
+    "passed_count": 0,
+    "blocked_count": 0,
+    "untested_count": 132,
+    "retest_count": 0,
+    "failed_count": 0,
+    "custom_status1_count": 0,
+    "custom_status2_count": 0,
+    "custom_status3_count": 0,
+    "custom_status4_count": 0,
+    "custom_status5_count": 0,
+    "custom_status6_count": 0,
+    "custom_status7_count": 0,
+    "project_id": 1,
+    "plan_id": null,
+    "created_on": 1603804896,
+    "updated_on": 1603804896,
+    "refs": null,
+    "created_by": 1,
+    "url": "https://me.testrail.io:8001/index.php?/runs/view/202"
+}
+"""
+
+let updatedRunResponseString = """
+{
+    "id": 203,
+    "suite_id": 1,
+    "name": "Remote",
+    "description": "Updated",
+    "milestone_id": null,
+    "assignedto_id": null,
+    "include_all": false,
+    "is_completed": false,
+    "completed_on": null,
+    "config": null,
+    "config_ids": [],
+    "passed_count": 0,
+    "blocked_count": 0,
+    "untested_count": 2,
+    "retest_count": 0,
+    "failed_count": 0,
+    "custom_status1_count": 0,
+    "custom_status2_count": 0,
+    "custom_status3_count": 0,
+    "custom_status4_count": 0,
+    "custom_status5_count": 0,
+    "custom_status6_count": 0,
+    "custom_status7_count": 0,
+    "project_id": 1,
+    "plan_id": null,
+    "created_on": 1603805003,
+    "updated_on": 1603805195,
+    "refs": null,
+    "created_by": 1,
+    "url": "https://me.testrail.io:8001/index.php?/runs/view/203"
+}
+"""
+
+let closedRunResponseString = """
+{
+    "id": 203,
+    "suite_id": 1,
+    "name": "Remote",
+    "description": "Updated",
+    "milestone_id": null,
+    "assignedto_id": null,
+    "include_all": false,
+    "is_completed": true,
+    "completed_on": 1603805329,
+    "config": null,
+    "config_ids": [],
+    "passed_count": 0,
+    "blocked_count": 0,
+    "untested_count": 2,
+    "retest_count": 0,
+    "failed_count": 0,
+    "custom_status1_count": 0,
+    "custom_status2_count": 0,
+    "custom_status3_count": 0,
+    "custom_status4_count": 0,
+    "custom_status5_count": 0,
+    "custom_status6_count": 0,
+    "custom_status7_count": 0,
+    "project_id": 1,
+    "plan_id": null,
+    "created_on": 1603805003,
+    "updated_on": 1603805195,
+    "refs": null,
+    "created_by": 1,
+    "url": "https://me.testrail.io:8001/index.php?/runs/view/203"
+}
+"""
