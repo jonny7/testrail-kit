@@ -78,8 +78,6 @@ public enum CaseResource: ConfigurationRepresentable {
         }
         return "&suite_id=\(suite)"
     }
-    
-    private func getSoftDelete(soft: Bool) -> String {
-        return soft ? "&soft=1" : ""
-    }
 }
+
+extension CaseResource: SoftDeletable {}

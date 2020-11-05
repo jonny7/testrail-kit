@@ -16,9 +16,9 @@ public struct Run: TestRailModel {
     public var retestCount: Int
     public var failedCount: Int
     public var projectId: Int
-    public var planId: Int
-    public var entryIndex: Int
-    public var entryId: UUID
+    public var planId: Int? // these are optional in `Run` but not optional in `Plan`
+    public var entryIndex: Int?
+    public var entryId: UUID?
     public var config: String?
     public var configIds: [Int]
     public var createdOn: Int
