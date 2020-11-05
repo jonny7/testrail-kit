@@ -12,17 +12,17 @@ public enum ResultResource: ConfigurationRepresentable {
                 guard let query = filter else {
                     return (uri: "get_results/\(testId)", method: .GET)
                 }
-                return (uri: "get_results/\(testId)\(self.queryParams(params: query))", method: .GET)
+                return (uri: "get_results/\(testId)\(query.queryParams)", method: .GET)
             case .get(.forCase(let runId, let caseId, let filter)):
                 guard let query = filter else {
                     return (uri: "get_results_for_case/\(runId)/\(caseId)", method: .GET)
                 }
-                return (uri: "get_results_for_case/\(runId)/\(caseId)\(self.queryParams(params: query))", method: .GET)
+                return (uri: "get_results_for_case/\(runId)/\(caseId)\(query.queryParams)", method: .GET)
             case .get(.forRun(let runId, let filter)):
                 guard let query = filter else {
                     return (uri: "get_results_for_run/\(runId)", method: .GET)
                 }
-                return (uri: "get_results_for_run/\(runId)\(self.queryParams(params: query))", method: .GET)
+                return (uri: "get_results_for_run/\(runId)\(query.queryParams)", method: .GET)
             case .add(.addResult(let testId)):
                 return (uri: "add_result/\(testId)", method: .POST)
             case .add(.addResultForCase(let runId, let caseId)):
@@ -33,19 +33,10 @@ public enum ResultResource: ConfigurationRepresentable {
                 return (uri: "add_results_for_cases/\(runId)", method: .POST)
         }
     }
-    
-    /// Returns a query parameter string from Array of enum filters
-    /// - Parameter params: `[FilterRepresentable]` array of filters
-    /// - Returns: query string to append to endpoint
-    private func queryParams<Filter: FilterRepresentable>(params: [Filter]) -> String {
-        return params.reduce("", { a, b in
-            return a + b.queryParams
-        })
-    }
 
     public enum ResultFilter: FilterRepresentable {
         /// A single Defect ID (e.g. TR-1, 4291, etc.)
-        case defectsFilter(defect:String)
+        case defectsFilter(defect: String)
         /// Limit the result to :limit test results. Use :offset to skip records.
         case limit(limit: Int, offset: Int?)
         /// A comma-separated list of status IDs to filter by.
@@ -54,17 +45,16 @@ public enum ResultResource: ConfigurationRepresentable {
         var queryParams: String {
             switch self {
                 case .defectsFilter(let defect):
-                    return getDefectLimit(defectId: defect)
+                    return getSingleStringFilter(name: "defects_filter", value: defect)
                 case .limit(let limit, let offset):
                     return getLimitAndOffset(limit: limit, offset: offset)
-                case .status(let status_ids):
-                    let ids = getIds(ids: status_ids)
-                    return "&status_id=\(ids)"
+                case .status(let statusIds):
+                    return getIdList(name: "status_id", list: statusIds)
             }
         }
     }
     
-    public enum RunFilter: FilterRepresentable {        
+    public enum RunFilter: FilterRepresentable {
         /// Only return test results created after this date (as UNIX timestamp).
         /// You can pass a standard Date and it will be converted
         case createdAfter(date: Date)
@@ -83,21 +73,17 @@ public enum ResultResource: ConfigurationRepresentable {
         var queryParams: String {
             switch self {
                 case .createdAfter(let date):
-                    let timestamp = (Int(date.timeIntervalSince1970))
-                    return "&created_after=\(timestamp)"
+                    return getTimestampFilter(name: "created_after", value: date)
                 case .createdBefore(let date):
-                    let timestamp = (Int(date.timeIntervalSince1970))
-                    return "&created_before=\(timestamp)"
+                    return getTimestampFilter(name: "created_before", value: date)
                 case .createdBy(let userIds):
-                    let ids = getIds(ids: userIds)
-                    return "&created_by=\(ids)"
+                    return getIdList(name: "created_by", list: userIds)
                 case .defectsFilter(let defect):
-                    return getDefectLimit(defectId: defect)
+                    return getSingleStringFilter(name: "defects_filter", value: defect)
                 case .limit(let limit, let offset):
                     return getLimitAndOffset(limit: limit, offset: offset)
-                case .status(let status_ids):
-                    let ids = getIds(ids: status_ids)
-                    return "&status_id=\(ids)"
+                case .status(let statusIds):
+                    return getIdList(name: "status_id", list: statusIds)
             }
         }
     }
