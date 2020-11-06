@@ -47,37 +47,24 @@ public enum CaseResource: ConfigurationRepresentable {
                 return (uri: "get_case/\(caseId)", method: .GET)
             
             case .get(.all(let projectId, let suiteId, let filter)):
-                let suite = self.getSuite(suiteId: suiteId)
-                let uri = "get_cases/\(projectId)\(suite)\(filter?.queryParameters ?? "")"
+                let uri = "get_cases/\(projectId)\(self.getOptionalSuiteQueryParam(suiteId: suiteId))\(filter?.queryParameters ?? "")"
                 return (uri: uri, method: .GET)
             
             case .update(.one(let caseId)):
                 return (uri: "update_case/\(caseId)", method: .POST)
             
             case .update(type: .all(let projectId, let suiteId)):
-                let suite =  self.getSuite(suiteId: suiteId)
-                return (uri: "update_cases/\(projectId)\(suite)", method: .POST)
+                return (uri: "update_cases/\(projectId)\(self.getOptionalSuiteQueryParam(suiteId: suiteId))", method: .POST)
             
             case .delete(.one(let caseId, let soft)):
                 let softDeleted = self.getSoftDelete(soft: soft)
                 return (uri: "delete_case/\(caseId)\(softDeleted)", method: .POST)
                 
             case .delete(type: .all(let projectId, let soft, let suiteId)):
-                let suite =  self.getSuite(suiteId: suiteId)
-                let softDeleted = self.getSoftDelete(soft: soft)
-                return (uri: "delete_cases/\(projectId)\(suite)\(softDeleted)", method: .POST)
+                return (uri: "delete_cases/\(projectId)\(self.getOptionalSuiteQueryParam(suiteId: suiteId))\(self.getSoftDelete(soft: soft))", method: .POST)
         }
-    }
-    
-    /// Converts suiteId to empty string or query params
-    /// - Parameter suiteId: Int?
-    /// - Returns: query params
-    private func getSuite(suiteId: Int?) -> String {
-        guard let suite = suiteId else {
-            return ""
-        }
-        return "&suite_id=\(suite)"
     }
 }
 
 extension CaseResource: SoftDeletable {}
+extension CaseResource: OptionalSuiteRepresentable {}
