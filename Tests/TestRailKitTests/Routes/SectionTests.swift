@@ -4,9 +4,9 @@ import XCTest
 
 @testable import TestRailKit
 
-class RunTests: XCTestCase {
+class SectionTests: XCTestCase {
 
-    static var utilities = RunUtilities()
+    static var utilities = SectionUtilities()
 
     override class func tearDown() {
         //XCTAssertNoThrow(try Self.utilities.testServer.stop()) //this is a nio problem and should remain. Omitting for GH Actions only
@@ -14,9 +14,9 @@ class RunTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.group.syncShutdownGracefully())
     }
 
-    func testGetRun() {
-        var requestComplete: EventLoopFuture<Run>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: RunResource.get(type: .run(runId: 89))))
+    func testGetSection() {
+        var requestComplete: EventLoopFuture<Section>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: SectionResource.get(type: .one(sectionId: 1))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -24,7 +24,7 @@ class RunTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .GET,
-                        uri: "/index.php?/api/v2/get_run/89",
+                        uri: "/index.php?/api/v2/get_section/1",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
@@ -36,7 +36,7 @@ class RunTests: XCTestCase {
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        responseBuffer.writeString(Self.utilities.runResponseString)
+        responseBuffer.writeString(Self.utilities.sectionResponse)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -44,12 +44,12 @@ class RunTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.passedCount, 975)
+        XCTAssertEqual(response.name, "Prerequisites")
     }
     
-    func testGetRuns() {
-        var requestComplete: EventLoopFuture<[Run]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: RunResource.get(type: .runs(projectId: 3, filter: nil))))
+    func testGetSections() {
+        var requestComplete: EventLoopFuture<[Section]>!
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: SectionResource.get(type: .all(projectId: 2, suiteId: 5))))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -57,7 +57,7 @@ class RunTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .GET,
-                        uri: "/index.php?/api/v2/get_runs/3",
+                        uri: "/index.php?/api/v2/get_sections/2&suite_id=5",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
@@ -69,7 +69,7 @@ class RunTests: XCTestCase {
         XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        responseBuffer.writeString(Self.utilities.runsResponseString)
+        responseBuffer.writeString(Self.utilities.sectionsResponse)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -77,50 +77,17 @@ class RunTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.untestedCount, 193)
+        XCTAssertEqual(response.first?.name, "Prerequisites")
     }
     
-    func testGetRunsWithFilter() {
-        var requestComplete: EventLoopFuture<[Run]>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: RunResource.get(type: .runs(projectId: 3, filter: [.isCompleted(completed: true), .suiteIds(suiteIds: [2,1])]))))
-
+    func testAddSection() {
+        var requestComplete: EventLoopFuture<Section>!
         XCTAssertNoThrow(
-            XCTAssertEqual(
-                .head(
-                    .init(
-                        version: .init(major: 1, minor: 1),
-                        method: .GET,
-                        uri: "/index.php?/api/v2/get_runs/3&is_completed=1&suite_id=2,1",
-                        headers: .init([
-                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
-                            ("content-type", "application/json; charset=utf-8"),
-                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
-                            ("Content-Length", "0"),
-                        ]))),
-                try Self.utilities.testServer.readInbound()))
-
-        XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
-
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        responseBuffer.writeString(Self.utilities.runsResponseString)
-
-        XCTAssertNoThrow(
-            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
-
-        let response = try! requestComplete.wait()
-        XCTAssertEqual(response.first?.untestedCount, 193)
-    }
-    
-    func testAddRun() {
-        var requestComplete: EventLoopFuture<Run>!
-        XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.action(resource: RunResource.add(projectId: 3), body: Self.utilities.addRun)
+            requestComplete = try! Self.utilities.client.action(resource: SectionResource.add(projectId: 15), body: Self.utilities.addNewSection)
         )
         
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        try! requestBuffer.writeJSONEncodable(Self.utilities.addRun, encoder: Self.utilities.encoder)
+        try! requestBuffer.writeJSONEncodable(Self.utilities.addNewSection, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
 
         XCTAssertNoThrow(
@@ -129,7 +96,7 @@ class RunTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .POST,
-                        uri: "/index.php?/api/v2/add_run/3",
+                        uri: "/index.php?/api/v2/add_section/15",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
@@ -148,11 +115,11 @@ class RunTests: XCTestCase {
         XCTAssertEqual(
             body.getBytes(at: body.readerIndex, length: body.readableBytes),
             requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
-        XCTAssertEqual(try! Self.utilities.decoder.decode(AddRun.self, from: body).name, "Remote")
+        XCTAssertEqual(try! Self.utilities.decoder.decode(NewSection.self, from: body).suiteId, 1)
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        responseBuffer.writeString(Self.utilities.addRunResponse)
+        responseBuffer.writeString(Self.utilities.sectionResponse)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -160,17 +127,17 @@ class RunTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.name, "Remote")
+        XCTAssertEqual(response.name, "Prerequisites")
     }
     
-    func testUpdateRun() {
-        var requestComplete: EventLoopFuture<Run>!
+    func testUpdateSection() {
+        var requestComplete: EventLoopFuture<Section>!
         XCTAssertNoThrow(
-            requestComplete = try! Self.utilities.client.action(resource: RunResource.update(runId: 203), body: Self.utilities.updateRun)
+            requestComplete = try! Self.utilities.client.action(resource: SectionResource.update(sectionId: 2), body: Self.utilities.updatedSection)
         )
 
         var requestBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        try! requestBuffer.writeJSONEncodable(Self.utilities.updateRun, encoder: Self.utilities.encoder)
+        try! requestBuffer.writeJSONEncodable(Self.utilities.updatedSection, encoder: Self.utilities.encoder)
         let contentLength = requestBuffer.readableBytes
 
         XCTAssertNoThrow(
@@ -179,7 +146,7 @@ class RunTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .POST,
-                        uri: "/index.php?/api/v2/update_run/203",
+                        uri: "/index.php?/api/v2/update_section/2",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
@@ -198,11 +165,11 @@ class RunTests: XCTestCase {
         XCTAssertEqual(
             body.getBytes(at: body.readerIndex, length: body.readableBytes),
             requestBuffer.getBytes(at: requestBuffer.readerIndex, length: requestBuffer.readableBytes))
-        XCTAssertEqual(try! Self.utilities.decoder.decode(UpdateRun.self, from: body).description, "Updated")
+        XCTAssertEqual(try! Self.utilities.decoder.decode(UpdatedSection.self, from: body).name!, "A better section name")
         XCTAssertNoThrow(XCTAssertEqual(.end(nil), try Self.utilities.testServer.readInbound()))
 
         var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        responseBuffer.writeString(Self.utilities.updatedRunResponse)
+        responseBuffer.writeString(Self.utilities.updatedSectionResponse)
 
         XCTAssertNoThrow(
             try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
@@ -210,45 +177,12 @@ class RunTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
 
         let response = try! requestComplete.wait()
-        XCTAssertEqual(response.description, "Updated")
+        XCTAssertEqual(response.name, "A better section name")
     }
     
-    func testCloseRun() {
-        var requestComplete: EventLoopFuture<Run>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: RunResource.close(runId: 203)))
-
-        XCTAssertNoThrow(
-            XCTAssertEqual(
-                .head(
-                    .init(
-                        version: .init(major: 1, minor: 1),
-                        method: .POST,
-                        uri: "/index.php?/api/v2/close_run/203",
-                        headers: .init([
-                            ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
-                            ("content-type", "application/json; charset=utf-8"),
-                            ("Host", "127.0.0.1:\(Self.utilities.testServer.serverPort)"),
-                            ("Content-Length", "0"),
-                        ]))),
-                try Self.utilities.testServer.readInbound()))
-
-        XCTAssertEqual(try Self.utilities.testServer.readInbound(), .end(nil))
-
-        var responseBuffer = Self.utilities.allocator.buffer(capacity: 0)
-        responseBuffer.writeString(Self.utilities.closedRunResponse)
-
-        XCTAssertNoThrow(
-            try Self.utilities.testServer.writeOutbound(.head(.init(version: .init(major: 1, minor: 1), status: .ok))))
-        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.body(.byteBuffer(responseBuffer))))
-        XCTAssertNoThrow(try Self.utilities.testServer.writeOutbound(.end(nil)))
-
-        let response = try! requestComplete.wait()
-        XCTAssertEqual(response.isCompleted, true)
-    }
-    
-    func testDeleteRun() {
+    func testDeleteSection() {
         var requestComplete: EventLoopFuture<TestRailDataResponse>!
-        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: RunResource.delete(runId: 203, soft: false)))
+        XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: SectionResource.delete(sectionId: 15, soft: false)))
 
         XCTAssertNoThrow(
             XCTAssertEqual(
@@ -256,7 +190,7 @@ class RunTests: XCTestCase {
                     .init(
                         version: .init(major: 1, minor: 1),
                         method: .POST,
-                        uri: "/index.php?/api/v2/delete_run/203",
+                        uri: "/index.php?/api/v2/delete_section/15",
                         headers: .init([
                             ("authorization", "Basic dXNlckB0ZXN0cmFpbC5pbzoxMjM0YWJjZA=="),
                             ("content-type", "application/json; charset=utf-8"),
