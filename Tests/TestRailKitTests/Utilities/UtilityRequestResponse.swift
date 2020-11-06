@@ -1581,3 +1581,58 @@ let closedRunResponseString = """
     "url": "https://me.testrail.io:8001/index.php?/runs/view/203"
 }
 """
+
+// MARK: Section
+
+let sectionResponseString = """
+{
+    "depth": 0,
+    "description": null,
+    "display_order": 1,
+    "id": 1,
+    "name": "Prerequisites",
+    "parent_id": null,
+    "suite_id": 1
+}
+"""
+
+let sectionsResponseString = """
+[
+    {
+        "depth": 0,
+        "display_order": 1,
+        "id": 1,
+        "name": "Prerequisites",
+        "parent_id": null,
+        "suite_id": 1
+    },
+    {
+        "depth": 0,
+        "display_order": 2,
+        "id": 2,
+        "name": "Documentation & Help",
+        "parent_id": null,
+        "suite_id": 1
+    },
+    {
+        "depth": 1,
+        "display_order": 3,
+        "id": 3,
+        "name": "Licensing & Terms",
+        "parent_id": 2,
+        "suite_id": 1
+    }
+]
+"""
+
+let updatedSectionResponseString = """
+{
+    "depth": 0,
+    "description": null,
+    "display_order": 1,
+    "id": 1,
+    "name": "A better section name",
+    "parent_id": null,
+    "suite_id": 1
+}
+"""
