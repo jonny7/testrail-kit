@@ -13,6 +13,6 @@ struct Milestone: TestRailModel {
     var projectId: Int
     var parentId: Int?
     var refs: String?
-    var url: String
+    var url: URL
     var milestones: [Milestone]?
 }

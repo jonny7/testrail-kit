@@ -1436,7 +1436,7 @@ let runResponse = """
     "updated_on": 1602603574,
     "refs": null,
     "created_by": 1,
-    "url": "https://me.testrail.io:8001/index.php?/runs/view/89"
+    "url": "https://me.testrail.io/index.php?/runs/view/89"
 }
 """
 
@@ -1472,7 +1472,7 @@ let runsResponse = """
         "updated_on": 1597750586,
         "refs": null,
         "created_by": 1,
-        "url": "https://me.testrail.io:8001/index.php?/runs/view/86"
+        "url": "https://me.testrail.io/index.php?/runs/view/86"
     }
 ]
 """
@@ -1508,7 +1508,7 @@ let addedRunResponseString = """
     "updated_on": 1603804896,
     "refs": null,
     "created_by": 1,
-    "url": "https://me.testrail.io:8001/index.php?/runs/view/202"
+    "url": "https://me.testrail.io/index.php?/runs/view/202"
 }
 """
 
@@ -1543,7 +1543,7 @@ let updatedRunResponseString = """
     "updated_on": 1603805195,
     "refs": null,
     "created_by": 1,
-    "url": "https://me.testrail.io:8001/index.php?/runs/view/203"
+    "url": "https://me.testrail.io:1234/index.php?/runs/view/203"
 }
 """
 
@@ -1578,7 +1578,7 @@ let closedRunResponseString = """
     "updated_on": 1603805195,
     "refs": null,
     "created_by": 1,
-    "url": "https://me.testrail.io:8001/index.php?/runs/view/203"
+    "url": "https://me.testrail.io/index.php?/runs/view/203"
 }
 """
 
@@ -1675,3 +1675,33 @@ let statusResponseString = """
     }
 ]
 """
+
+// MARK: Suites
+let suiteResponseString = """
+{
+    "id": 5,
+    "name": "Smoke",
+    "description": null,
+    "project_id": 1,
+    "is_master": true,
+    "is_baseline": false,
+    "is_completed": false,
+    "completed_on": null,
+    "url": "https://me.testrail.io/index.php?/suites/view/1"
+}
+"""
+
+let updatedSuiteResponseString = """
+{
+    "id": 5,
+    "name": "Updated Suite",
+    "description": null,
+    "project_id": 1,
+    "is_master": true,
+    "is_baseline": false,
+    "is_completed": false,
+    "completed_on": null,
+    "url": "https://me.testrail.io/index.php?/suites/view/1"
+}
+"""
+
