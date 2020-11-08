@@ -1705,3 +1705,23 @@ let updatedSuiteResponseString = """
 }
 """
 
+// MARK: Template
+let templateResponseString = """
+[
+    {
+        "id": 1,
+        "is_default": true,
+        "name": "Test Case (Text)"
+    },
+    {
+        "id": 2,
+        "is_default": false,
+        "name": "Test Case (Steps)"
+    },
+    {
+        "id": 3,
+        "is_default": false,
+        "name": "Exploratory Session"
+    }
+]
+"""
