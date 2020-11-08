@@ -4,7 +4,7 @@ import XCTest
 
 @testable import TestRailKit
 
-class StatusesTests: XCTestCase {
+class StatusTests: XCTestCase {
 
     static var utilities = StatusesUtilities()
 
@@ -14,7 +14,7 @@ class StatusesTests: XCTestCase {
         XCTAssertNoThrow(try Self.utilities.group.syncShutdownGracefully())
     }
 
-    func testGetCaseFields() {
+    func testGetStatuses() {
         var requestComplete: EventLoopFuture<[Status]>!
         XCTAssertNoThrow(requestComplete = try Self.utilities.client.action(resource: StatusResource.get))
 
