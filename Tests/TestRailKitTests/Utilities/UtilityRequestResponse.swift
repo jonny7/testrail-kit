@@ -1757,3 +1757,14 @@ let testResponseString = """
     "custom_goals": null
 }
 """
+
+let userResponseString = """
+{
+    "name": "Jonny",
+    "id": 1,
+    "email": "jonny@github.com",
+    "is_active": true,
+    "role_id": 6,
+    "role": "QA Lead"
+}
+"""

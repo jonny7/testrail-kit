@@ -10,20 +10,15 @@ public enum TestResource: ConfigurationRepresentable {
     
     public var request: RequestDetails {
         switch self {
-        case .one(let testId):
-            return (uri: "get_test/\(testId)", method: .GET)
-        case .all(let runId, let statusIds):
-            guard let ids = statusIds else {
-                return (uri: "get_tests/\(runId)", method: .GET)
-            }
-            return (uri: "get_tests/\(runId)\(self.getIdList(name: "status_id", list: ids))", method: .GET)
+            case .one(let testId):
+                return (uri: "get_test/\(testId)", method: .GET)
+            case .all(let runId, let statusIds):
+                guard let ids = statusIds else {
+                    return (uri: "get_tests/\(runId)", method: .GET)
+                }
+                return (uri: "get_tests/\(runId)\(self.getIdList(name: "status_id", list: ids))", method: .GET)
         }
     }
 }
 
-extension TestResource: IDRepresentable {
-//    func getIdList(name: String, list: [Int]) -> String {
-//        let ids = list.map { String($0) }.joined(separator: ",")
-//        return "&\(name)=\(ids)"
-//    }
-}
+extension TestResource: IDRepresentable {}
