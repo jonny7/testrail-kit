@@ -22,8 +22,8 @@ public enum TestResource: ConfigurationRepresentable {
 }
 
 extension TestResource: IDRepresentable {
-    func getIdList(name: String, list: [Int]) -> String {
-        let ids = list.map { String($0) }.joined(separator: ",")
-        return "&\(name)=\(ids)"
-    }
+//    func getIdList(name: String, list: [Int]) -> String {
+//        let ids = list.map { String($0) }.joined(separator: ",")
+//        return "&\(name)=\(ids)"
+//    }
 }
