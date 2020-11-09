@@ -42,7 +42,7 @@ If you wish to use a model that doesn't currently exist in the library because y
 TestRail supports partial updates, if you wish to use these, you will need to make this new object conform to `TestRailPostable`. You can see an example of this in the [tests](https://github.com/jonny7/testrail-kit/blob/master/Tests/TestRailKitTests/Utilities/Classes/SuiteUtilities.swift).  
 
 ## Vapor
-For those who want to use this library with the most popular server side Swift framework Vapor, please see this ![repo](https://github.com/jonny7/testrail).
+For those who want to use this library with the most popular server side Swift framework Vapor, please see this [repo](https://github.com/jonny7/testrail).
 
 ## Contributing 
 All help is welcomed, please open a PR 
