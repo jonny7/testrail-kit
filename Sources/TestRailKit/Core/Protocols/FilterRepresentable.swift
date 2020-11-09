@@ -1,10 +1,9 @@
 import Foundation
 
-protocol FilterRepresentable {
+protocol FilterRepresentable: IDRepresentable {
     var queryParams: String { get }
     func getSingleStringFilter(name: String, value: String) -> String
     func getLimitAndOffset(limit: Int, offset: Int?) -> String
-    func getIdList(name: String, list: [Int]) -> String
     func getTimestampFilter(name: String, value: Date) -> String
     func getBoolToStringRepresentable(name: String, bool: Bool) -> String
 }
@@ -19,7 +18,7 @@ extension FilterRepresentable {
     func getSingleStringFilter(name: String, value: String) -> String {
         return "&\(name)=\(value)"
     }
-    
+
     /// Default Implementation of limit and offset
     /// - Parameters:
     ///   - limit: numerical limit
@@ -30,7 +29,7 @@ extension FilterRepresentable {
         guard let offset = offset else { return limit }
         return "\(limit)&offset=\(offset)"
     }
-    
+
     /// Default Implementation or string separated IDs
     /// - Parameters:
     ///   - name: query param
@@ -40,7 +39,7 @@ extension FilterRepresentable {
         let ids = list.map { String($0) }.joined(separator: ",")
         return "&\(name)=\(ids)"
     }
-    
+
     /// Default Implementation of Timestamp
     /// - Parameters:
     ///   - name: query param
@@ -50,7 +49,7 @@ extension FilterRepresentable {
         let timestamp = (Int(value.timeIntervalSince1970))
         return "&\(name)=\(timestamp)"
     }
-    
+
     /// Converts name with boolean to query param
     /// - Parameters:
     ///   - name: query parameter name

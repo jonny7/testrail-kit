@@ -1725,3 +1725,35 @@ let templateResponseString = """
     }
 ]
 """
+
+// MARK: Test
+let testResponseString = """
+{
+    "id": 103641,
+    "case_id": 2171,
+    "status_id": 1,
+    "assignedto_id": null,
+    "run_id": 89,
+    "title": "Password must meet regex",
+    "template_id": 2,
+    "type_id": 9,
+    "priority_id": 2,
+    "estimate": null,
+    "estimate_forecast": null,
+    "refs": null,
+    "milestone_id": null,
+    "custom_automation_type": null,
+    "custom_testrail_label": null,
+    "custom_preconds": "User is on the sign up page",
+    "custom_steps": null,
+    "custom_expected": null,
+    "custom_steps_separated": [
+        {
+            "content": "User clicks sign up",
+            "expected": "Sign up form is displayed"
+        }
+    ],
+    "custom_mission": null,
+    "custom_goals": null
+}
+"""
